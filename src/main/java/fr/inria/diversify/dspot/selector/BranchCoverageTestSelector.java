@@ -303,5 +303,4 @@ public class BranchCoverageTestSelector implements TestSelector {
 
         return methods;
     }
-
 }

@@ -74,7 +74,6 @@ public class PitMutantScoreSelector implements TestSelector {
             DSpotCompiler.buildCompiler(this.program, true);
             DSpotUtils.compileTests(this.program, mavenHome, mavenLocalRepository);
             InitUtils.initLogLevel(configuration);
-
         } catch (Exception | InvalidSdkException e) {
             throw new RuntimeException(e);
         }
@@ -87,6 +86,8 @@ public class PitMutantScoreSelector implements TestSelector {
         this.testAlreadyRun.clear();
         this.testAlreadyAdded.clear();
         this.originalPitResults.clear();
+        this.testAlreadyRun.clear();
+        this.testAlreadyAdded.clear();
     }
 
     @Override
