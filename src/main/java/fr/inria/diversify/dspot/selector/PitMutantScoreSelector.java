@@ -74,6 +74,7 @@ public class PitMutantScoreSelector implements TestSelector {
             DSpotCompiler.buildCompiler(this.program, true);
             DSpotUtils.compileTests(this.program, mavenHome, mavenLocalRepository);
             InitUtils.initLogLevel(configuration);
+
         } catch (Exception | InvalidSdkException e) {
             throw new RuntimeException(e);
         }
@@ -88,6 +89,7 @@ public class PitMutantScoreSelector implements TestSelector {
         this.originalPitResults.clear();
         this.testAlreadyRun.clear();
         this.testAlreadyAdded.clear();
+        this.originalPitResults.clear();
     }
 
     @Override
@@ -156,6 +158,7 @@ public class PitMutantScoreSelector implements TestSelector {
         // empty
     }
 
+    //TODO the report should be an object
     @Override
     public void report() {
         StringBuilder string = new StringBuilder();
@@ -184,6 +187,7 @@ public class PitMutantScoreSelector implements TestSelector {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
 }

@@ -119,6 +119,7 @@ public class BranchCoverageTestSelector implements TestSelector {
                                         this.currentClassTestToBeAmplified.getQualifiedName() + "." + test.getSimpleName()))
                         .findAny()
                         .get()));
+
         return amplifiedTestKept;
     }
 
