@@ -158,7 +158,6 @@ public class PitMutantScoreSelector implements TestSelector {
         // empty
     }
 
-    //TODO the report should be an object
     @Override
     public void report() {
         StringBuilder string = new StringBuilder();
@@ -187,7 +186,6 @@ public class PitMutantScoreSelector implements TestSelector {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 }

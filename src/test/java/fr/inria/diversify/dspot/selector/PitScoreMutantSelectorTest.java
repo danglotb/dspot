@@ -4,10 +4,7 @@ import fr.inria.diversify.buildSystem.android.InvalidSdkException;
 import fr.inria.diversify.dspot.AmplificationHelper;
 import fr.inria.diversify.dspot.DSpot;
 import fr.inria.diversify.dspot.DSpotUtils;
-<<<<<<< 170d9faa65708cc8ff9bb2171b37db7f4bfe7247
 import fr.inria.diversify.dspot.MavenAbstractTest;
-=======
->>>>>>> selector build now a report
 import fr.inria.diversify.dspot.amplifier.StatementAdderOnAssert;
 import fr.inria.diversify.dspot.support.DSpotCompiler;
 import fr.inria.diversify.mutant.pit.PitResult;
@@ -32,13 +29,7 @@ import static org.junit.Assert.assertTrue;
  * benjamin.danglot@inria.fr
  * on 1/9/17
  */
-<<<<<<< 170d9faa65708cc8ff9bb2171b37db7f4bfe7247
 public class PitScoreMutantSelectorTest extends MavenAbstractTest {
-=======
-public class PitScoreMutantSelectorTest {
-
-    public static final String pathToPropertiesFile = "src/test/resources/test-projects/test-projects.properties";
->>>>>>> selector build now a report
 
     @Test
     public void testSelection() throws Exception, InvalidSdkException {
