@@ -204,6 +204,8 @@ public class Amplification {
     }
 
     private JunitResult compileAndRunTests(CtType classTest, List<CtMethod<?>> currentTestList) {
+        currentTestList.stream().filter(ctMethod -> !ctMethod.getParameters().isEmpty()).forEach(classTest::removeMethod);
+        currentTestList = currentTestList.stream().filter(ctMethod -> ctMethod.getParameters().isEmpty()).collect(Collectors.toList());
         CtType amplifiedTestClass = this.testSelector.buildClassForSelection(classTest, currentTestList);
         boolean status = TestCompiler.writeAndCompile(this.compiler, amplifiedTestClass, false,
                 this.inputProgram.getProgramDir() + this.inputProgram.getClassesDir() + "/:" +

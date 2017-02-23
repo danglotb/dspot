@@ -3,6 +3,7 @@ package fr.inria.diversify.mutant.pit;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,8 @@ public class PitResultParser {
                 results.add(new PitResult(state, fullQualifiedNameMutantOperator, fullQualifiedNameMethod, lineNumber, location));
             });
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return null;
+//            throw new RuntimeException(e);
         }
         return results;
     }

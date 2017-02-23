@@ -126,6 +126,8 @@ public class PitMutantScoreSelector implements TestSelector {
                             selectedTests.add(method);
                         }
                     });
+        } else {
+            return new ArrayList<>();
         }
 
         selectedTests.forEach(selectedTest ->
