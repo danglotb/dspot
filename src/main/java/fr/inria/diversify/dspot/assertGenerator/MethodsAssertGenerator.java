@@ -168,8 +168,8 @@ public class MethodsAssertGenerator {
                         stmt.insertAfter(statement);
                     }
                     numberOfAddedAssertion++;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                } catch (Exception ignored) {
+                    //throw new RuntimeException(e);
                 }
             }
         }
