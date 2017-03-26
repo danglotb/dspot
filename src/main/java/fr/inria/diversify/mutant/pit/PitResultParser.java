@@ -36,7 +36,7 @@ public class PitResultParser {
                         fullQualifiedNameMethod = nameOfTheKiller[0];
                         fullQualifiedNameClass = nameOfTheKiller[1].substring(0, nameOfTheKiller[1].length() - 1);
                     } else {
-                        fullQualifiedNameMethod = "none";
+                        fullQualifiedNameMethod = nameOfTheKiller[0];
                         fullQualifiedNameClass = nameOfTheKiller[0];
                     }
                 }

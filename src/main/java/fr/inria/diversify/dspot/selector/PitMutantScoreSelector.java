@@ -237,7 +237,9 @@ public class PitMutantScoreSelector implements TestSelector {
                     this.currentClassTestToBeAmplified.getQualifiedName(), this.currentClassTestToBeAmplified.getMethods().size());
         }
         List<CtMethod> keys = new ArrayList<>(this.testThatKilledMutants.keySet());
-        keys.forEach(amplifiedTest -> {
+        keys.stream()
+                .filter(ctMethod -> ctMethod != null)
+                .forEach(amplifiedTest -> {
                     List<PitResult> pitResults = new ArrayList<>(this.testThatKilledMutants.get(amplifiedTest));
                     final List<MutantJSON> mutantsJson = new ArrayList<>();
                     pitResults.forEach(pitResult -> mutantsJson.add(new MutantJSON(
