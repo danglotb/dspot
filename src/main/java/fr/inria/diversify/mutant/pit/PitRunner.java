@@ -67,10 +67,10 @@ public class PitRunner {
                             ""//
             };
             builder.runGoals(phases, true);
-            if (!new File(program.getProgramDir() + "/target/pit-reports").exists()) {
+            File directoryReportPit = new File(program.getProgramDir() + "/target/pit-reports").listFiles()[0];
+            if (!directoryReportPit.exists()) {
                 return null;
             }
-            File directoryReportPit = new File(program.getProgramDir() + "/target/pit-reports").listFiles()[0];
             File fileResults = new File(directoryReportPit.getPath() + "/mutations.csv");
             List<PitResult> results = PitResultParser.parse(fileResults);
             Log.debug("Time to run pit mutation coverage {} ms", System.currentTimeMillis() - time);

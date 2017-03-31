@@ -14,6 +14,9 @@ import java.util.List;
 public class PitResultParser {
 
     public static List<PitResult> parse(File fileResults) {
+        if (!fileResults.exists()) {
+            return null;
+        }
         final List<PitResult> results = new ArrayList<>();
         try (BufferedReader buffer = new BufferedReader(new FileReader(fileResults))) {
             buffer.lines().forEach(line -> {
