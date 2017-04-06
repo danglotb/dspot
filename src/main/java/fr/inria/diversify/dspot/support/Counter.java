@@ -2,9 +2,11 @@ package fr.inria.diversify.dspot.support;
 
 import fr.inria.diversify.dspot.AmplificationHelper;
 import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.CtType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Created by Benjamin DANGLOT
@@ -37,6 +39,18 @@ public class Counter {
 
     public static void updateInputOf(CtMethod method, int number) {
         updateGivenMap(method, number, getInstance().numberOfInputAdded);
+    }
+
+    public static Integer getAllAssertions() {
+        return getAllOfGivenMap(getInstance().numberOfAssertionAdded);
+    }
+
+    public static Integer getAllInput() {
+        return getAllOfGivenMap(getInstance().numberOfInputAdded);
+    }
+
+    public static Integer getAllOfGivenMap(Map<String, Integer> map) {
+        return map.values().stream().mapToInt(Integer::intValue).sum();
     }
 
     public static Integer getAssertionOf(CtMethod method) {
@@ -75,6 +89,10 @@ public class Counter {
             mapToBeUpdated.put(method.getSimpleName(), 0);
         }
         mapToBeUpdated.put(method.getSimpleName(), mapToBeUpdated.get(method.getSimpleName()) + number);
+    }
+
+    public static void reset() {
+        _instance = null;
     }
 
 }

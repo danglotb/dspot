@@ -39,7 +39,7 @@ public class PitMutantScoreSelector implements TestSelector {
 
     private List<PitResult> originalKilledMutants;
 
-    private Map<CtMethod, Set<PitResult>> testThatKilledMutants;
+    private Map<CtMethod<?>, Set<PitResult>> testThatKilledMutants;
 
     private List<PitResult> mutantNotTestedByOriginal;
 
@@ -233,7 +233,7 @@ public class PitMutantScoreSelector implements TestSelector {
                 throw new RuntimeException(e);
             }
         } else {
-            testClassJSON = new TestClassJSON(getNbMutantKilledOriginally(this.currentClassTestToBeAmplified.getSimpleName()),
+            testClassJSON = new TestClassJSON(getNbMutantKilledOriginally(this.currentClassTestToBeAmplified.getQualifiedName()),
                     this.currentClassTestToBeAmplified.getQualifiedName(),
                     this.currentClassTestToBeAmplified.getMethods()
                             .stream()
@@ -251,12 +251,21 @@ public class PitMutantScoreSelector implements TestSelector {
                             pitResult.getLineNumber(),
                             pitResult.getLocation()
                     )));
-                    testClassJSON.addTestCase(new TestCaseJSON(
-                            amplifiedTest.getSimpleName(),
-                            Counter.getAssertionOfSinceOrigin(amplifiedTest),
-                            Counter.getInputOfSinceOrigin(amplifiedTest),
-                            mutantsJson
-                    ));
+                    if (amplifiedTest == null) {
+                        testClassJSON.addTestCase(new TestCaseJSON(
+                                this.currentClassTestToBeAmplified.getSimpleName(),
+                                Counter.getAllAssertions(),
+                                Counter.getAllInput(),
+                                mutantsJson
+                        ));
+                    } else {
+                        testClassJSON.addTestCase(new TestCaseJSON(
+                                amplifiedTest.getSimpleName(),
+                                Counter.getAssertionOfSinceOrigin(amplifiedTest),
+                                Counter.getInputOfSinceOrigin(amplifiedTest),
+                                mutantsJson
+                        ));
+                    }
                 }
         );
         try (FileWriter writer = new FileWriter(file, false)) {
@@ -268,7 +277,7 @@ public class PitMutantScoreSelector implements TestSelector {
     }
 
     private int getNbMutantKilledOriginally(String qualifiedName) {
-        return (int)this.originalKilledMutants.stream()
+        return (int) this.originalKilledMutants.stream()
                 .filter(pitResult ->
                         qualifiedName.equals(pitResult.getFullQualifiedNameClass())
                 )

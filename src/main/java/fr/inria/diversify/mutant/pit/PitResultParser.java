@@ -34,13 +34,13 @@ public class PitResultParser {
                     fullQualifiedNameMethod = "none";
                     fullQualifiedNameClass = "none";
                 } else {
-                    final String[] nameOfTheKiller = splittedLines[6].split("\\(");
-                    if (nameOfTheKiller.length == 2) {
+                    String[] nameOfTheKiller = splittedLines[6].split("\\(");
+                    if (nameOfTheKiller.length == 2) { // case methodName(className)
                         fullQualifiedNameMethod = nameOfTheKiller[0];
                         fullQualifiedNameClass = nameOfTheKiller[1].substring(0, nameOfTheKiller[1].length() - 1);
-                    } else {
-                        fullQualifiedNameMethod = nameOfTheKiller[0];
-                        fullQualifiedNameClass = nameOfTheKiller[0];
+                    } else { // case className.className
+                        fullQualifiedNameMethod = "none";
+                        fullQualifiedNameClass = nameOfTheKiller[0].substring(0, nameOfTheKiller[0].length() / 2);
                     }
                 }
                 int lineNumber = Integer.parseInt(splittedLines[4]);

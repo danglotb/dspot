@@ -4,6 +4,7 @@ import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtType;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Benjamin DANGLOT
@@ -26,7 +27,7 @@ public class PitResult {
 
     private final String simpleNameMethod;
 
-    private CtMethod testCase = null;
+    private CtMethod<?> testCase = null;
 
     public PitResult(State stateOfMutant, String fullQualifiedNameMutantOperator, String fullQualifiedNameMethod, String fullQualifiedNameClass, int lineNumber, String nameOfLocalisation) {
         this.stateOfMutant = stateOfMutant;
@@ -58,14 +59,12 @@ public class PitResult {
         return fullQualifiedNameClass;
     }
 
-    public CtMethod getMethod(CtType ctClass) {
+    public CtMethod getMethod(CtType<?> ctClass) {
         if ("none".equals(this.simpleNameMethod)) {
             return null;
         } else {
             if (this.testCase == null) {
-                String[] splittedQualifiedName = this.simpleNameMethod.split("\\.");
-                String simpleNameOfMethod = splittedQualifiedName[splittedQualifiedName.length - 1];
-                List<CtMethod<?>> methodsByName = ctClass.getMethodsByName(simpleNameOfMethod);
+                List<CtMethod<?>> methodsByName = ctClass.getMethodsByName(this.simpleNameMethod);
                 if (methodsByName.isEmpty()) {
                     if (ctClass.getSuperclass() != null) {
                         return getMethod(ctClass.getSuperclass().getDeclaration());
