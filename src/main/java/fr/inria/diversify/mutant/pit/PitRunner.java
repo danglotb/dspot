@@ -73,7 +73,11 @@ public class PitRunner {
                             ""//
             };
             builder.runGoals(phases, true);
-            File directoryReportPit = new File(program.getProgramDir() + "/target/pit-reports").listFiles()[0];
+            final File[] files = new File(program.getProgramDir() + "/target/pit-reports").listFiles();
+            if (files == null) {
+                return null;
+            }
+            File directoryReportPit = files[0];
             if (!directoryReportPit.exists()) {
                 return null;
             }
