@@ -52,9 +52,9 @@ public class PitDescartesTest {
         assertEquals(2 ,originalTestClass.getMethods().size());
 
         final CtType ctType = dspot.amplifyTest("fr.inria.stamp.mutationtest.test.TestCalculator");
-        assertEquals(8, ctType.getMethods().size());
+        assertEquals(9, ctType.getMethods().size());
 
-        final CtMethod<?> integraltypestest_cf1237 = (CtMethod<?>) ctType.getMethodsByName("Integraltypestest_cf1237").get(0);
+        final CtMethod<?> integraltypestest_cf1237 = (CtMethod<?>) ctType.getMethodsByName("Integraltypestest_cf1175").get(0);
         assertEquals(expectedBody, integraltypestest_cf1237.getBody().toString());
 
         FileUtils.cleanDirectory(new File(configuration.getOutputDirectory()));
@@ -69,10 +69,10 @@ public class PitDescartesTest {
             "    org.junit.Assert.assertEquals(0, calculator.getCeiling());" + nl +
             "    org.junit.Assert.assertEquals(0L, calculator.getSquare());" + nl +
             "    // AssertGenerator replace invocation" + nl +
-            "    boolean o_Integraltypestest_cf1237__11 = // StatementAdderMethod cloned existing statement" + nl +
-            "calculator.isOdd();" + nl +
+            "    fr.inria.stamp.mutationtest.test.Calculator o_Integraltypestest_cf1175__11 = // StatementAdderMethod cloned existing statement" + nl +
+            "    calculator.getClone();" + nl +
             "    // AssertGenerator add assertion" + nl +
-            "    org.junit.Assert.assertTrue(o_Integraltypestest_cf1237__11);" + nl +
+            "    org.junit.Assert.assertTrue(((fr.inria.stamp.mutationtest.test.Calculator)o_Integraltypestest_cf1175__11).isOdd());" + nl +
             "    org.junit.Assert.assertEquals(0, calculator.getLastOperatorSymbol());" + nl +
             "}";
 
