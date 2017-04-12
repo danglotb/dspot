@@ -12,6 +12,7 @@ import fr.inria.diversify.testRunner.TestCompiler;
 import fr.inria.diversify.testRunner.TestRunner;
 import org.junit.runner.notification.Failure;
 import spoon.reflect.code.*;
+import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.factory.Factory;
@@ -122,7 +123,7 @@ public class MethodsAssertGenerator {
                         return ctMethod;
                     })
                     .collect(Collectors.toList());
-            testsWithLog.forEach(clone ::addMethod);
+            testsWithLog.forEach(clone::addMethod);
             testCasesWithLogs.addAll(testsWithLog);
         }
         ObjectLog.reset();
@@ -135,7 +136,6 @@ public class MethodsAssertGenerator {
                     .collect(Collectors.toList());
         }
     }
-
 
 
     private CtMethod<?> buildTestWithAssert(CtMethod test, Map<String, Observation> observations) {
@@ -154,18 +154,22 @@ public class MethodsAssertGenerator {
                 DSpotUtils.addComment(statement, "AssertGenerator add assertion", CtComment.CommentType.INLINE);
                 try {
                     CtStatement stmt = statements.get(line);
+                    stmt.insertAfter(statement);
                     if (stmt instanceof CtInvocation && !AssertGeneratorHelper.isVoidReturn((CtInvocation) stmt)) {
-                        String localVarSnippet = ((CtInvocation) stmt).getType().toString()
-                                + " o_" + id + " = "
-                                + stmt.toString();
-                        CtStatement localVarStmt = factory.Code().createCodeSnippetStatement(localVarSnippet);
-                        stmt.replace(localVarStmt);
-                        statements.set(line, localVarStmt);
-                        DSpotUtils.addComment(localVarStmt, "AssertGenerator replace invocation", CtComment.CommentType.INLINE);
-                        localVarStmt.setParent(stmt.getParent());
-                        localVarStmt.insertAfter(statement);
-                    } else {
-                        stmt.insertAfter(statement);
+                        final CtLocalVariable localVariable = factory.Code()
+                                .createLocalVariable(((CtInvocation) stmt).getType(),
+                                        "o_" + id,
+                                        ((CtInvocation) stmt).clone());
+                        if (stmt.getParent() instanceof CtBlock) {
+                            stmt.replace(localVariable);
+                            stmt.setParent(localVariable);
+                        } else if (stmt.getParent() instanceof CtInvocation) {
+                            getParentBeforeBlock(stmt).insertBefore(localVariable);
+                            final CtVariableAccess variableRead =
+                                    factory.Code().createVariableRead(localVariable.getReference(), false);
+                            stmt.replace(variableRead);
+                        }
+                        DSpotUtils.addComment(localVariable, "AssertGenerator replace invocation", CtComment.CommentType.INLINE);
                     }
                     numberOfAddedAssertion++;
                 } catch (Exception e) {
@@ -180,6 +184,14 @@ public class MethodsAssertGenerator {
         } else {
             return null;
         }
+    }
+
+    private CtStatement getParentBeforeBlock(CtStatement statement) {
+        CtElement parent = statement;
+        while (!(parent.getParent() instanceof CtBlock)) {
+            parent = parent.getParent();
+        }
+        return (CtStatement) parent;
     }
 
     protected CtMethod<?> makeFailureTest(CtMethod<?> test, Failure failure) {
