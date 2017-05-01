@@ -23,16 +23,16 @@ public class CtTypeUtils {
 
     public static boolean isPrimitive(CtTypeReference type) {
         try {
-            return type.isPrimitive();
+            return type != null && type.isPrimitive();
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            Log.warn("Error during check isPrimitive on " + type);
         }
+        return false;
     }
 
-    public static  boolean isString(CtTypeReference type) {
+    public static boolean isString(CtTypeReference type) {
         try {
-            return String.class.isAssignableFrom(type.getActualClass());
+            return type != null && String.class.isAssignableFrom(type.getActualClass());
         } catch (Exception ignored) {
             Log.warn("Error during check isString on " + type);
         }
@@ -40,12 +40,14 @@ public class CtTypeUtils {
     }
 
     public static boolean isPrimitiveArray(CtTypeReference type) {
-        return CtArrayTypeReference.class.isInstance(type) && isPrimitive(((CtArrayTypeReference) type).getComponentType());
+        return type != null &&
+                CtArrayTypeReference.class.isInstance(type) &&
+                isPrimitive(((CtArrayTypeReference) type).getComponentType());
     }
 
     public static boolean isPrimitiveCollection(CtTypeReference type) {
         try {
-            return Collection.class.isAssignableFrom(type.getActualClass());
+            return type != null && Collection.class.isAssignableFrom(type.getActualClass());
         } catch (Exception ignored) {
             Log.warn("Error during check isPrimitiveCollection on " + type);
         }

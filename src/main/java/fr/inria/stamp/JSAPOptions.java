@@ -36,7 +36,8 @@ public class JSAPOptions {
         MethodAdd(new TestMethodCallAdder()),
         MethodRemove(new TestMethodCallRemover()),
         StatementAdderOnAssert(new StatementAdderOnAssert()),
-        TestDataMutator(new TestDataMutator());
+        TestDataMutator(new TestDataMutator()),
+        StatementAdd(null);
         public final Amplifier amplifier;
 
         private AmplifierEnum(Amplifier amplifier) {
@@ -75,8 +76,11 @@ public class JSAPOptions {
         PitRunner.descartesMode = jsapConfig.getBoolean("descartes");
         PitRunner.evosuiteMode = jsapConfig.getBoolean("evosuite");
 
+        List<Amplifier> amplifiers = buildAmplifiersFromString(jsapConfig.getStringArray("amplifiers"));
+        boolean useStatementAdd = amplifiers.remove(null);
+
         return new Configuration(jsapConfig.getString("path"),
-                buildAmplifiersFromString(jsapConfig.getStringArray("amplifiers")),
+                amplifiers,
                 jsapConfig.getInt("iteration"),
                 Arrays.asList(jsapConfig.getStringArray("test")),
                 jsapConfig.getString("output"),
@@ -84,7 +88,8 @@ public class JSAPOptions {
                 Arrays.asList(jsapConfig.getStringArray("testClasses")),
                 jsapConfig.getLong("seed"),
                 jsapConfig.getInt("timeOut"),
-                jsapConfig.getString("mavenHome"));
+                jsapConfig.getString("mavenHome"),
+                useStatementAdd);
     }
 
     private static Amplifier stringToAmplifier(String amplifier) {

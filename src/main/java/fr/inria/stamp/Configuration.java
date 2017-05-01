@@ -17,8 +17,12 @@ public class Configuration {
     public final long seed;
     public final int timeOutInMs;
     public final String mavenHome;
+    public final boolean useStatementAdd;
 
-    public Configuration(String pathToConfigurationFile, List<Amplifier> amplifiers, int nbIteration, List<String> testClasses, String pathToOutput, TestSelector selector, List<String> namesOfTestCases, long seed, int timeOutInMs, String mavenHome) {
+    public Configuration(String pathToConfigurationFile, List<Amplifier> amplifiers, int nbIteration,
+                         List<String> testClasses, String pathToOutput, TestSelector selector,
+                         List<String> namesOfTestCases, long seed, int timeOutInMs, String mavenHome,
+                         boolean useStatementAdd) {
         this.pathToConfigurationFile = pathToConfigurationFile;
         this.amplifiers = amplifiers;
         this.nbIteration = nbIteration;
@@ -29,5 +33,6 @@ public class Configuration {
         this.seed = seed;
         this.timeOutInMs = timeOutInMs;
         this.mavenHome = mavenHome;
+        this.useStatementAdd = useStatementAdd;
     }
 }

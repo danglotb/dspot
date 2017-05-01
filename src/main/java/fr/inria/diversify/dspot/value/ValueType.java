@@ -12,8 +12,6 @@ import spoon.reflect.reference.CtExecutableReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * User: Simon
@@ -40,7 +38,7 @@ public class ValueType {
         }
     }
 
-    public Value getRandomValue(boolean generateIsEmpty) {
+    public Value getRandomValue() {
         while (!values.isEmpty()) {
             int index = AmplificationHelper.getRandom().nextInt(values.size());
             Value value = values.get(index);
@@ -50,15 +48,11 @@ public class ValueType {
                 values.remove(value);
             }
         }
-        if(generateIsEmpty) {
-            return generateRandomValue();
-        } else {
-            return null;
-        }
+        return generateRandomValue();
     }
 
-    public List<Value> getAll(boolean generateIsEmpty) {
-        if(generateIsEmpty && values.isEmpty()) {
+    public List<Value> getAll() {
+        if(values.isEmpty()) {
             Value random = generateRandomValue();
             if(random != null) {
                 values.add(random);

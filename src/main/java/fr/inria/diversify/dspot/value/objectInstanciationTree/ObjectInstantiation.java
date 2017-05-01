@@ -1,7 +1,6 @@
 package fr.inria.diversify.dspot.value.objectInstanciationTree;
 
 
-import fr.inria.diversify.dspot.value.PrimitiveValue;
 import fr.inria.diversify.dspot.value.Value;
 import fr.inria.diversify.dspot.value.ValueFactory;
 import fr.inria.diversify.dspot.value.ValueType;
@@ -12,7 +11,6 @@ import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtTypeReference;
 
-import java.time.temporal.TemporalAmount;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -61,7 +59,7 @@ public class ObjectInstantiation extends Value {
                     .filter(i -> params.get(i).isEmpty())
                     .forEach(i -> {
                         ValueType type = valueFactory.getValueType(args.get(i));
-                        params.get(i).addAll(type.getAll(true));
+                        params.get(i).addAll(type.getAll());
                     });
 
             isOk = params.stream()

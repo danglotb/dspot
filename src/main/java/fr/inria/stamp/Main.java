@@ -3,6 +3,7 @@ package fr.inria.stamp;
 import fr.inria.diversify.buildSystem.android.InvalidSdkException;
 import fr.inria.diversify.dspot.AmplificationHelper;
 import fr.inria.diversify.dspot.DSpot;
+import fr.inria.diversify.dspot.amplifier.StatementAdd;
 import fr.inria.diversify.runner.InputConfiguration;
 import fr.inria.diversify.runner.InputProgram;
 
@@ -33,6 +34,9 @@ public class Main {
         DSpot dspot = new DSpot(inputConfiguration, configuration.nbIteration, configuration.amplifiers, configuration.selector);
         if (configuration.pathToOutput != null) {
             inputConfiguration.getProperties().setProperty("outputDirectory", configuration.pathToOutput);
+        }
+        if (configuration.useStatementAdd) {
+            dspot.addAmplifier(new StatementAdd(dspot.getInputProgram()));
         }
 
         AmplificationHelper.setSeedRandom(configuration.seed);

@@ -120,7 +120,7 @@ public class ValueFactory {
         if(target != null && target.isTopLevel() && !target.getModifiers().contains(ModifierKind.ABSTRACT)) {
             String className = target.getQualifiedName();
             ValueType valueType = getValueType(className);
-            Value value = valueType.getRandomValue(true);
+            Value value = valueType.getRandomValue();
 
              if(value != null) {
                 return value.getValue();
@@ -147,7 +147,7 @@ public class ValueFactory {
         if(target != null && target.isTopLevel() && !target.getModifiers().contains(ModifierKind.ABSTRACT)) {
             String className = target.getQualifiedName();
             ValueType valueType = getValueType(className);
-            Value value = valueType.getRandomValue(true);
+            Value value = valueType.getRandomValue();
 
             return value != null;
         }

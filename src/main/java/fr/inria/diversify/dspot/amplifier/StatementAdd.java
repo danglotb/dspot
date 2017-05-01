@@ -1,6 +1,7 @@
 package fr.inria.diversify.dspot.amplifier;
 
 
+import fr.inria.diversify.dspot.AmplificationChecker;
 import fr.inria.diversify.dspot.AmplificationHelper;
 import fr.inria.diversify.dspot.value.Value;
 import fr.inria.diversify.dspot.value.ValueFactory;
@@ -116,15 +117,17 @@ public class StatementAdd implements Amplifier {
         for (int i = 0; i < parameters.size(); i++) {
             try {
                 CtParameter parameter = parameters.get(i);
-                Value value = valueFactory.getValueType(parameter.getType()).getRandomValue(true);
-                CtLocalVariable localVar = factory.Code().createLocalVariable(
-                        generateStaticType(parameter.getType(), value.getDynamicType()),
-                        parameter.getSimpleName() + "_" + count[0]++,
-                        null);
-                body.getStatements().add(0, localVar);
-                localVar.setParent(body);
-                arg.add(createLocalVarRef(localVar));
-                value.initLocalVar(body, localVar);
+                Value value = valueFactory.getValueType(parameter.getType()).getRandomValue();
+                if (value != null) {
+                    CtLocalVariable localVar = factory.Code().createLocalVariable(
+                            generateStaticType(parameter.getType(), value.getDynamicType()),
+                            parameter.getSimpleName() + "_" + count[0]++,
+                            null);
+                    body.getStatements().add(0, localVar);
+                    localVar.setParent(body);
+                    arg.add(createLocalVarRef(localVar));
+                    value.initLocalVar(body, localVar);
+                }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -173,7 +176,7 @@ public class StatementAdd implements Amplifier {
 
     private List<CtMethod> findMethodsWithTargetType(CtTypeReference type) {
         if (type == null) {
-            return new ArrayList<>(0);
+            return Collections.emptyList();
         } else {
             return methods.stream()
                     .filter(mth -> mth.getDeclaringType().getReference().getQualifiedName().equals(type.getQualifiedName()))
@@ -192,17 +195,18 @@ public class StatementAdd implements Amplifier {
     private void initMethods(CtType testClass) {
         methods = AmplificationHelper.computeClassProvider(testClass).stream()
                 .flatMap(cl -> {
-                    Set<CtMethod> allMethods = cl.getAllMethods();
+                    Set<CtMethod<?>> allMethods = cl.getAllMethods();
                     return allMethods.stream();
                 })
                 .filter(mth -> !mth.getModifiers().contains(ModifierKind.ABSTRACT))//TODO abstract
                 .filter(mth -> !mth.getModifiers().contains(ModifierKind.PRIVATE))
                 .filter(mth -> mth.getBody() != null)
                 .filter(mth -> !mth.getBody().getStatements().isEmpty())
+                .filter(mth -> !AmplificationChecker.isTest(mth))
                 .filter(mth -> {
-                    List<CtParameter> parameters = mth.getParameters();
+                    List<CtParameter<?>> parameters = mth.getParameters();
                     return parameters.stream()
-                            .map(param -> param.getType())
+                            .map(CtTypedElement::getType)
                             .allMatch(param -> CtTypeUtils.isPrimitive(param)
                                     || CtTypeUtils.isString(param)
                                     || CtTypeUtils.isPrimitiveArray(param)
