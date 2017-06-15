@@ -5,6 +5,7 @@ import fr.inria.diversify.dspot.DSpotUtils;
 import fr.inria.diversify.runner.InputConfiguration;
 import fr.inria.diversify.runner.InputProgram;
 import fr.inria.diversify.util.Log;
+import fr.inria.stamp.Main;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.reference.CtTypeReference;
@@ -96,7 +97,7 @@ public class PitRunner {
                             OPT_EXCLUDED_CLASSES + configuration.getProperty(PROPERTY_EXCLUDED_CLASSES) :
                             ""//
             };
-            builder.runGoals(phases, true);
+            builder.runGoals(phases, Main.verbose);
             if (!new File(program.getProgramDir() + "/target/pit-reports").exists()) {
                 return null;
             }
@@ -161,7 +162,7 @@ public class PitRunner {
                             OPT_EXCLUDED_CLASSES + configuration.getProperty(PROPERTY_EXCLUDED_CLASSES) :
                             ""//
             };
-            builder.runGoals(phases, true);
+            builder.runGoals(phases, Main.verbose);
             File directoryReportPit = new File(program.getProgramDir() + "/target/pit-reports").listFiles()[0];
             List<PitResult> results = PitResultParser.parse(new File(directoryReportPit.getPath() + "/mutations.csv"));
             Log.debug("Time to run pit mutation coverage {} ms", System.currentTimeMillis() - time);

@@ -3,6 +3,7 @@ package fr.inria.diversify.testRunner;
 import fr.inria.diversify.buildSystem.maven.MavenBuilder;
 import fr.inria.diversify.runner.InputConfiguration;
 import fr.inria.diversify.util.Log;
+import fr.inria.stamp.Main;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.w3c.dom.Document;
@@ -49,7 +50,7 @@ public class JunitRunnerMock extends JunitRunner {
         try {
             MavenBuilder builder = new MavenBuilder(configuration.getInputProgram().getProgramDir());
             builder.setBuilderPath(buildMavenHome(configuration));
-            builder.runGoals(new String[]{"-Dtest=" + buildTestCaseName(test.getQualifiedName(), methodsToRun), "test"}, false);
+            builder.runGoals(new String[]{"-Dtest=" + buildTestCaseName(test.getQualifiedName(), methodsToRun), "test"}, Main.verbose);
             final String pathFile = configuration.getInputProgram().getProgramDir() + "/target/surefire-reports/TEST-" + test.getQualifiedName() + ".xml";
             readSurefireReports(test, pathFile, result);
         } catch (Throwable e) {

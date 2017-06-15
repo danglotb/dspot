@@ -75,6 +75,8 @@ public class JSAPOptions {
         PitRunner.descartesMode = jsapConfig.getBoolean("descartes");
         PitRunner.evosuiteMode = jsapConfig.getBoolean("evosuite");
 
+        Main.verbose = jsapConfig.getBoolean("verbose");
+
         return new Configuration(jsapConfig.getString("path"),
                 buildAmplifiersFromString(jsapConfig.getStringArray("amplifiers")),
                 jsapConfig.getInt("iteration"),
@@ -222,6 +224,10 @@ public class JSAPOptions {
         evosuiteMode.setShortFlag('k');
         evosuiteMode.setLongFlag("evosuite");
 
+        Switch verbose = new Switch("verbose");
+        verbose.setShortFlag('v');
+        verbose.setLongFlag("verbose");
+
         try {
             jsap.registerParameter(pathToConfigFile);
             jsap.registerParameter(amplifiers);
@@ -236,6 +242,7 @@ public class JSAPOptions {
             jsap.registerParameter(mavenHome);
             jsap.registerParameter(seed);
             jsap.registerParameter(timeOut);
+            jsap.registerParameter(verbose);
             jsap.registerParameter(example);
             jsap.registerParameter(help);
         } catch (JSAPException e) {

@@ -5,6 +5,7 @@ import fr.inria.diversify.dspot.DSpotUtils;
 import fr.inria.diversify.runner.InputConfiguration;
 import fr.inria.diversify.runner.InputProgram;
 import fr.inria.diversify.util.Log;
+import fr.inria.stamp.Main;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
@@ -48,7 +49,7 @@ public class MavenDependenciesResolver {
             MavenBuilder builder = new MavenBuilder(programDir);
             builder.setBuilderPath(pathToMavenHome);
             String[] phases = new String[]{"dependency:build-classpath", "-Dmdep.outputFile=" + NAME_FILE_CLASSPATH};
-            builder.runGoals(phases, false);
+            builder.runGoals(phases, Main.verbose);
             final File fileClasspath = new File(programDir + FILE_SEPARATOR + NAME_FILE_CLASSPATH);
             try (BufferedReader buffer = new BufferedReader(new FileReader(fileClasspath))) {
                 return Arrays.stream(buffer.lines()
