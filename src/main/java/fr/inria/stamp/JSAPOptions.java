@@ -1,6 +1,7 @@
 package fr.inria.stamp;
 
 import com.martiansoftware.jsap.*;
+import edu.emory.mathcs.backport.java.util.Collections;
 import fr.inria.diversify.dspot.amplifier.*;
 import fr.inria.diversify.dspot.selector.BranchCoverageTestSelector;
 import fr.inria.diversify.dspot.selector.PitMutantScoreSelector;
@@ -36,7 +37,8 @@ public class JSAPOptions {
         MethodAdd(new TestMethodCallAdder()),
         MethodRemove(new TestMethodCallRemover()),
         StatementAdderOnAssert(new StatementAdderOnAssert()),
-        TestDataMutator(new TestDataMutator());
+        TestDataMutator(new TestDataMutator()),
+        None(null);
         public final Amplifier amplifier;
 
         private AmplifierEnum(Amplifier amplifier) {
@@ -93,9 +95,10 @@ public class JSAPOptions {
 
     private static List<Amplifier> buildAmplifiersFromString(String[] amplifiersAsString) {
         if (amplifiersAsString == null) {
-            return Arrays.stream(new String[]{"MethodAdd", "MethodRemove", "StatementAdderOnAssert", "TestDataMutator"})
-                    .map(JSAPOptions::stringToAmplifier)
-                    .collect(Collectors.toList());
+            return Collections.emptyList();
+            //return Arrays.stream(new String[]{"MethodAdd", "MethodRemove", "StatementAdderOnAssert", "TestDataMutator"})
+            //        .map(JSAPOptions::stringToAmplifier)
+            //        .collect(Collectors.toList());
         } else {
             return Arrays.stream(amplifiersAsString)
                     .map(JSAPOptions::stringToAmplifier)
