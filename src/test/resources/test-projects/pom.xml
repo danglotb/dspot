@@ -7,8 +7,8 @@
 
   <properties>
     <default.encoding>UTF-8</default.encoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -17,5 +17,18 @@
   		<artifactId>junit</artifactId>
   		<version>4.11</version>
   	</dependency>
+
+      <dependency>
+          <artifactId>pitest</artifactId>
+          <groupId>org.pitest</groupId>
+          <version>1.2.0</version>
+      </dependency>
+
+      <dependency>
+          <artifactId>pitest-entry</artifactId>
+          <groupId>org.pitest</groupId>
+          <version>1.2.0</version>
+      </dependency>
+
   </dependencies>
 </project>

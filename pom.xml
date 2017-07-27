@@ -84,6 +84,13 @@
             <version>1.9.5</version>
         </dependency>
 
+        <dependency>
+            <artifactId>pitest-entry</artifactId>
+            <groupId>org.pitest</groupId>
+            <version>1.2.0</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
