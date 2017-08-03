@@ -3,9 +3,6 @@ package fr.inria.stamp.test.runner;
 import fr.inria.diversify.logger.Logger;
 import fr.inria.stamp.test.filter.MethodFilter;
 import fr.inria.stamp.test.listener.TestListener;
-import org.junit.runner.Request;
-import org.junit.runner.Runner;
-import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runner.notification.RunNotifier;
 import org.mockito.runners.MockitoJUnitRunner;
 
