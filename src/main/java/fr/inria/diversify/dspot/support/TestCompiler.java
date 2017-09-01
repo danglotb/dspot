@@ -8,6 +8,7 @@ import fr.inria.diversify.util.Log;
 import fr.inria.diversify.util.PrintClassUtils;
 import fr.inria.diversify.utils.AmplificationHelper;
 import fr.inria.diversify.utils.TypeUtils;
+import fr.inria.stamp.Main;
 import fr.inria.stamp.test.launcher.TestLauncher;
 import fr.inria.stamp.test.listener.TestListener;
 import org.eclipse.jdt.core.compiler.CategorizedProblem;
@@ -61,7 +62,6 @@ public class TestCompiler {
 		if (withLogger) {
 			copyLoggerFile(compiler);
 		}
-
 		printAndDelete(compiler, classTest);
 		final List<CategorizedProblem> problems = compiler.compileAndGetProbs(dependencies)
 				.stream()
@@ -71,6 +71,9 @@ public class TestCompiler {
 			return Collections.emptyList();
 		} else {
 			Log.warn("{} errors during compilation, discarding involved test methods", problems.size());
+			if (Main.verbose) {
+				problems.forEach(problem -> Log.warn("{}", problem));
+			}
 			try {
 				final CtClass<?> newModelCtClass = getNewModelCtClass(compiler.getSourceOutputDirectory().getAbsolutePath(),
 						classTest.getQualifiedName());

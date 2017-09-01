@@ -3,6 +3,7 @@ package fr.inria.diversify.dspot.assertGenerator;
 import fr.inria.diversify.Utils;
 import fr.inria.diversify.buildSystem.android.InvalidSdkException;
 import fr.inria.diversify.dspot.AbstractTest;
+import fr.inria.stamp.Main;
 import org.junit.Test;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtMethod;
@@ -17,6 +18,8 @@ import static junit.framework.TestCase.assertEquals;
  * on 3/4/17
  */
 public class MethodsAssertGeneratorTest extends AbstractTest {
+
+
 
     @Test
     public void testBuildAssertOnSpecificCases() throws Exception {
@@ -44,6 +47,7 @@ public class MethodsAssertGeneratorTest extends AbstractTest {
 
     @Test
     public void testBuildNewAssert() throws InvalidSdkException, Exception {
+		Main.verbose = true;
         CtClass testClass = Utils.findClass("fr.inria.sample.TestClassWithoutAssert");
         MethodsAssertGenerator mag = new MethodsAssertGenerator(testClass, Utils.getInputConfiguration(), Utils.getCompiler());
 

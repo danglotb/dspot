@@ -4,6 +4,7 @@ import fr.inria.diversify.Utils;
 import fr.inria.diversify.buildSystem.android.InvalidSdkException;
 import fr.inria.diversify.utils.AmplificationHelper;
 import fr.inria.diversify.dspot.AbstractTest;
+import fr.inria.stamp.Main;
 import org.junit.After;
 import org.junit.Test;
 import spoon.reflect.declaration.CtClass;
@@ -26,6 +27,8 @@ public class AssertGeneratorTest extends AbstractTest {
         /*
             test the generation of assertion
          */
+
+        Main.verbose = true;
 
         CtClass testClass = Utils.findClass("fr.inria.sample.TestClassWithoutAssert");
         AssertGenerator assertGenerator = new AssertGenerator(Utils.getInputConfiguration(), Utils.getCompiler());

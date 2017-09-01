@@ -151,17 +151,17 @@ public class MavenAutomaticBuilder implements AutomaticBuilder {
 	}
 
 	protected void runGoals(String pathToRootOfProject, String... goals) {
-		if (Main.verbose) {
-			Log.debug("run maven {}", Arrays.stream(goals).collect(Collectors.joining(" ")));
-		}
 		InvocationRequest request = new DefaultInvocationRequest();
 		request.setGoals(Arrays.asList(goals));
 		request.setPomFile(new File(pathToRootOfProject + FILE_SEPARATOR + POM_FILE));
 		request.setJavaHome(new File(System.getProperty("java.home")));
 		MavenInvoker invoker = new MavenInvoker();
 		invoker.setMavenHome(new File(this.mavenHome));
-		invoker.setOutputHandler(System.out::println);
-		invoker.setErrorHandler(System.err::println);
+		if (Main.verbose) {
+			Log.debug("run maven {}", Arrays.stream(goals).collect(Collectors.joining(" ")));
+			invoker.setOutputHandler(System.out::println);
+			invoker.setErrorHandler(System.err::println);
+		}
 		try {
 			invoker.execute(request);
 		} catch (Exception e) {
