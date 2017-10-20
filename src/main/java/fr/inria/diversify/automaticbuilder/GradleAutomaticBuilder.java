@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import fr.inria.diversify.mutant.pit.GradlePitTaskAndOptions;
 import fr.inria.diversify.mutant.pit.PitResultParser;
 import fr.inria.diversify.runner.InputConfiguration;
+import fr.inria.stamp.test.listener.TestListener;
 import org.gradle.tooling.BuildLauncher;
 import org.gradle.tooling.GradleConnector;
 import org.gradle.tooling.ProjectConnection;
@@ -88,6 +89,11 @@ public class GradleAutomaticBuilder implements AutomaticBuilder {
     @Override
     public void runPit(String pathToRootOfProject) {
         runPit(pathToRootOfProject, null);
+    }
+
+    @Override
+    public TestListener runTest(String pathToRootOfproject, String fullQualifiedName, String... testToBeRun) {
+        throw new UnsupportedOperationException("Must be implemented"); // TODO
     }
 
     @Override

@@ -1,5 +1,6 @@
 package fr.inria.diversify.automaticbuilder;
 
+import fr.inria.stamp.test.listener.TestListener;
 import spoon.reflect.declaration.CtType;
 
 /**
@@ -21,6 +22,8 @@ public interface AutomaticBuilder {
     void runPit(String pathToRootOfProject, CtType<?> testClass);
 
     void runPit(String pathToRootOfProject);
+
+    TestListener runTest(String pathToRootOfProject, String fullQualifiedName, String... testToBeRun);
 
     String getOutputDirectoryPit();
 }
