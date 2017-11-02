@@ -91,7 +91,8 @@ public class DSpotJDTBatchCompiler extends JDTBatchCompiler {
             } catch (IOException var10) {
                 fileName = this.filenames[i];
             }
-            units[i] = new CompilationUnit((char[])null, fileName, encoding, this.destinationPaths[i], false, null);
+//            units[i] = new CompilationUnit((char[])null, fileName, encoding, this.destinationPaths[i], false, null);
+            units[i] = new CompilationUnit((char[])null, fileName, encoding, this.destinationPaths[i], false);
         }
         return units;
     }

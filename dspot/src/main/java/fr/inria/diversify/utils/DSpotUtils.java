@@ -203,7 +203,7 @@ public class DSpotUtils {
 					}
 				}
 		).forEach(file ->
-				DSpotUtils.copyFile(pathToProgramDir, resourcesToBeCopied, pathDirectoryToCopy, file)
+				DSpotUtils.copyFile(pathToProgramDir, resourcesToBeCopied, pathDirectoryToCopy, (File)file)
 		);
 	}
 
