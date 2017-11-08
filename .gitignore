@@ -1,17 +1,16 @@
 # Resources #
 +###################
-src/test/resources/aResource
-src/test/resources/aResourcesDirectory/
-src/test/resources/test-projects/.gradle/
-src/test/resources/test-projects/gjp_cp
-src/test/resources/test-projects/test-projects.properties
-src/test/resources/test-projects/sample.properties
-src/test/resources/mockito/log/
-src/test/resources/sample/log/
-src/test/resources/test-projects/log/
-src/test/resources/multiple-pom/log/
-src/test/resources/multiple-pom/module-1/module-2-1/log/
-
+dspot/src/test/resources/aResource
+dspot/src/test/resources/aResourcesDirectory/
+dspot/src/test/resources/test-projects/.gradle/
+dspot/src/test/resources/test-projects/gjp_cp
+dspot/src/test/resources/test-projects/test-projects.properties
+dspot/src/test/resources/test-projects/sample.properties
+dspot/src/test/resources/mockito/log/
+dspot/src/test/resources/sample/log/
+dspot/src/test/resources/test-projects/log/
+dspot/src/test/resources/multiple-pom/log/
+dspot/src/test/resources/multiple-pom/module-1/module-2-1/log/
 
 
 target/
