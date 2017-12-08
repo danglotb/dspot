@@ -1,5 +1,6 @@
 package fr.inria.stamp.test.filter;
 
+import fr.inria.stamp.Playground;
 import fr.inria.stamp.test.runner.DefaultTestRunnerTest;
 import fr.inria.stamp.test.runner.MockitoTestRunnerTest;
 import org.junit.Test;
@@ -27,6 +28,7 @@ public class MethodFilterTest {
 				Collections.singletonList("testRunTestClass")
 		));
 		assertEquals(2, request.getRunner().testCount());
+		new Playground().p(0, 0);
 	}
 
 	@Test

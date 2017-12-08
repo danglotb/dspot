@@ -4,6 +4,7 @@ import fr.inria.diversify.utils.DSpotUtils;
 import fr.inria.diversify.utils.sosiefier.InputConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -120,6 +121,7 @@ public class MainTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        new Playground().p(0, 0);
     }
 
     @Test

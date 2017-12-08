@@ -34,8 +34,8 @@ public class TestCompiler {
 	public static TestListener compileAndRun(CtType<?> testClass, DSpotCompiler compiler, List<CtMethod<?>> testsToRun,
 											 InputConfiguration configuration) {
 		final InputProgram inputProgram = configuration.getInputProgram();
-		final String dependencies = inputProgram.getProgramDir() + "/" + inputProgram.getClassesDir() + System.getProperty("path.separator") +
-				inputProgram.getProgramDir() + "/" + inputProgram.getTestClassesDir() + System.getProperty("path.separator") +
+		final String dependencies = inputProgram.getProgramDir() + "/" + inputProgram.getClassesDir() + AmplificationHelper.PATH_SEPARATOR +
+				inputProgram.getProgramDir() + "/" + inputProgram.getTestClassesDir() + AmplificationHelper.PATH_SEPARATOR +
 				"target/dspot/dependencies/";
 		final List<CtMethod<?>> uncompilableMethods = TestCompiler.compile(compiler, testClass, dependencies);
 		if (uncompilableMethods.contains(TestCompiler.METHOD_CODE_RETURN)) {
@@ -46,7 +46,8 @@ public class TestCompiler {
 			if (testsToRun.isEmpty()) {
 				return null;
 			}
-			final String classPath = AmplificationHelper.getClassPath(compiler, configuration.getInputProgram());
+			final String classPath = AmplificationHelper.getClassPath(compiler, configuration.getInputProgram()) +
+					AmplificationHelper.PATH_SEPARATOR + "target/dspot/dependencies/";
 			return TestLauncher.runFromSpoonNodes(configuration, classPath, testClass, testsToRun);
 		}
 	}

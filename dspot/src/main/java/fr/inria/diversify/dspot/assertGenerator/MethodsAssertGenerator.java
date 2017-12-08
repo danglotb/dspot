@@ -1,7 +1,7 @@
 package fr.inria.diversify.dspot.assertGenerator;
 
-import fr.inria.diversify.compare.ObjectLog;
 import fr.inria.diversify.compare.Observation;
+import fr.inria.diversify.dspot.support.observation.ObservationsLoader;
 import fr.inria.diversify.utils.AmplificationHelper;
 import fr.inria.diversify.utils.DSpotUtils;
 import fr.inria.diversify.dspot.support.Counter;
@@ -136,7 +136,7 @@ public class MethodsAssertGenerator {
                         })
                         .collect(Collectors.toList())
         ));
-        ObjectLog.reset();
+        AssertGeneratorHelper.addTearDownToInstrumentedClass(clone);
         LOGGER.info("Run instrumented tests. ({})", testToRuns.size());
         final TestListener result = TestCompiler.compileAndRun(clone,
                 this.compiler,
@@ -146,7 +146,7 @@ public class MethodsAssertGenerator {
         if (result == null || !result.getFailingTests().isEmpty()) {
             return Collections.emptyList();
         } else {
-            Map<String, Observation> observations = ObjectLog.getObservations();
+            Map<String, Observation> observations = ObservationsLoader.loadObservations();
             LOGGER.info("Generating assertions...");
             return testCases.stream()
                     .map(ctMethod -> this.buildTestWithAssert(ctMethod, observations))

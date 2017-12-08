@@ -24,6 +24,7 @@ public class TestRunnerFactory {
 
     static {
         STRING_ARRAY_LIST.add("mockit");
+        STRING_ARRAY_LIST.add("org.junit.jupiter.api");
         //STRING_ARRAY_LIST.add("org.mockito");
     }
 
@@ -44,7 +45,8 @@ public class TestRunnerFactory {
         if (testClass != null && containsSpecificAnnotation.test(testClass)) {
             return new ReflectiveTestRunner(classpath);
         } else {
-            return new DefaultTestRunner(classpath);
+            return new ReflectiveTestRunner(classpath);
+            //return new DefaultTestRunner(classpath);
         }
     }
 
@@ -52,7 +54,8 @@ public class TestRunnerFactory {
         if (containsSpecificAnnotation.test(testClass)) {
             return new ReflectiveTestRunner(classLoader);
         } else {
-            return new DefaultTestRunner(classLoader);
+            return new ReflectiveTestRunner(classLoader);
+            //return new DefaultTestRunner(classLoader);
         }
     }
 

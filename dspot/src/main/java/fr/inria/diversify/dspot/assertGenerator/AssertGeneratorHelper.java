@@ -1,18 +1,24 @@
-package fr.inria.diversify.dspot.assertGenerator;
+    package fr.inria.diversify.dspot.assertGenerator;
 
-import fr.inria.diversify.compare.ObjectLog;
 import fr.inria.diversify.utils.AmplificationHelper;
+import spoon.Launcher;
 import spoon.reflect.code.*;
+import spoon.reflect.declaration.CtAnnotationType;
+import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtNamedElement;
+import spoon.reflect.declaration.CtType;
 import spoon.reflect.declaration.CtTypedElement;
+import spoon.reflect.declaration.ModifierKind;
+import spoon.reflect.factory.Factory;
 import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.filter.TypeFilter;
 import spoon.support.SpoonClassNotFoundException;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -38,6 +44,33 @@ public class AssertGeneratorHelper {
                                 test.getSimpleName() + "__" + indexOfByRef(allStatement, statement))
                 );
         return clone;
+    }
+
+    static void addTearDownToInstrumentedClass(CtType<?> testClass) {
+        final Factory factory = testClass.getFactory();
+        // 1 there is an existing testDown method ?
+        CtMethod tearDownMethod;
+        final Optional<CtMethod<?>> existingTearDown = testClass.getMethods().stream().filter(ctMethod ->
+                ctMethod.getAnnotations().stream()
+                        .anyMatch(ctAnnotation -> ctAnnotation.getAnnotationType().getSimpleName().equals("AfterClass"))
+                ).findFirst();
+        if (!existingTearDown.isPresent()) { // 2 if not, create it
+            tearDownMethod = factory.createMethod();
+            tearDownMethod.setSimpleName("tearDown");
+            tearDownMethod.setType(factory.Type().VOID_PRIMITIVE);
+            tearDownMethod.addModifier(ModifierKind.PUBLIC);
+            tearDownMethod.addModifier(ModifierKind.STATIC);
+            factory.Annotation().annotate(tearDownMethod, factory.Annotation().create("org.junit.AfterClass").getReference());
+            testClass.addMethod(tearDownMethod);
+        } else {
+            tearDownMethod = existingTearDown.get();
+        }
+        final CtCodeSnippetStatement invocation = factory.createCodeSnippetStatement("fr.inria.diversify.compare.Utils.writeObservations()");
+        if (tearDownMethod.getBody() == null) {
+            tearDownMethod.setBody(invocation);
+        } else {
+            tearDownMethod.getBody().insertEnd(invocation);
+        }
     }
 
     private static int indexOfByRef(List<CtStatement> statements, CtStatement statement) {
@@ -119,13 +152,13 @@ public class AssertGeneratorHelper {
             return;
         }
 
-        final CtTypeAccess<ObjectLog> typeAccess = stmt.getFactory().createTypeAccess(
-                stmt.getFactory().Type().createReference(ObjectLog.class)
+        final CtTypeAccess typeAccess = stmt.getFactory().createTypeAccess(
+                stmt.getFactory().Type().createReference("fr.inria.diversify.compare.ObjectLog")
         );
 
         final CtExecutableReference objectLogExecRef = stmt.getFactory().createExecutableReference()
                 .setStatic(true)
-                .setDeclaringType(stmt.getFactory().Type().createReference(ObjectLog.class))
+                .setDeclaringType(stmt.getFactory().Type().createReference("fr.inria.diversify.compare.ObjectLog"))
                 .setSimpleName("log");
         objectLogExecRef.setType(stmt.getFactory().Type().voidPrimitiveType());
 
@@ -192,7 +225,7 @@ public class AssertGeneratorHelper {
         for (int i = statements.indexOf(statement) + 1 ; i < statements.size() ; i++) {
             if (! (statements.get(i) instanceof CtInvocation) ||
                     !((CtInvocation)statements.get(i)).getTarget().equals(statement.getFactory().createTypeAccess(
-                            statement.getFactory().Type().createReference(ObjectLog.class)))) {
+                            statement.getFactory().Type().createReference("fr.inria.diversify.compare.ObjectLog")))) {
                 return true;
             }
         }

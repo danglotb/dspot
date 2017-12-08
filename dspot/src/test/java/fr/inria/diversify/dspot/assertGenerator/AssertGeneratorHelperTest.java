@@ -166,4 +166,23 @@ public class AssertGeneratorHelperTest extends AbstractTest {
 		assertEquals(expectedMethod, testWithLog.toString());
 	}
 
+	@Test
+	public void testInsertTearDownMethod() throws Exception {
+
+		/*
+			DSpot should be able to add the instruction to save the observations map if:
+				- a teardown (annotated with @After) method exist,
+				- or create the teardown (annotated with @After) method
+		 */
+
+		final CtClass testClassWithTearDown = Utils.findClass("fr.inria.teardown.WithTearDownTest");
+		System.out.println(testClassWithTearDown);
+		AssertGeneratorHelper.addTearDownToInstrumentedClass(testClassWithTearDown);
+		System.out.println(testClassWithTearDown);
+
+		final CtClass testClassWithoutTearDown = Utils.findClass("fr.inria.teardown.WithoutTearDownTest");
+		System.out.println(testClassWithoutTearDown);
+		AssertGeneratorHelper.addTearDownToInstrumentedClass(testClassWithoutTearDown);
+		System.out.println(testClassWithoutTearDown);
+	}
 }
