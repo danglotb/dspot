@@ -20,8 +20,8 @@ public class MethodsAssertGeneratorTest extends AbstractTest {
 
 	@Test
 	public void testOnInfiniteLoop() throws Exception {
-		final CtClass testClass = Utils.findClass("fr.inria.infinite.LoopTest");
-		MethodsAssertGenerator mag = new MethodsAssertGenerator(testClass, Utils.getInputConfiguration(), Utils.getCompiler());
+		final CtClass<?> testClass = Utils.findClass("fr.inria.infinite.LoopTest");
+		MethodsAssertGenerator mag = new MethodsAssertGenerator(testClass, Utils.getInputConfiguration(), Utils.getCompiler(), testClass.getMethods());
 		CtMethod test = Utils.findMethod("fr.inria.infinite.LoopTest", "testLoop");
 		List<CtMethod<?>> test_buildNewAssert = mag.generateAsserts(testClass, Collections.singletonList(test));
 		assertTrue(test_buildNewAssert.isEmpty());
@@ -29,8 +29,8 @@ public class MethodsAssertGeneratorTest extends AbstractTest {
 
 	@Test
 	public void testMultipleObservationsPoints() throws Exception {
-		CtClass testClass = Utils.findClass("fr.inria.multipleobservations.TestClassToBeTest");
-		MethodsAssertGenerator mag = new MethodsAssertGenerator(testClass, Utils.getInputConfiguration(), Utils.getCompiler());
+		CtClass<?> testClass = Utils.findClass("fr.inria.multipleobservations.TestClassToBeTest");
+		MethodsAssertGenerator mag = new MethodsAssertGenerator(testClass, Utils.getInputConfiguration(), Utils.getCompiler(), testClass.getMethods());
 		CtMethod test = Utils.findMethod("fr.inria.multipleobservations.TestClassToBeTest", "test");
 		List<CtMethod<?>> test_buildNewAssert = mag.generateAsserts(testClass, Collections.singletonList(test));
 		final String expectedMethodWithAssertions = "@org.junit.Test(timeout = 10000)" + nl  +
@@ -51,8 +51,8 @@ public class MethodsAssertGeneratorTest extends AbstractTest {
 
 	@Test
     public void testBuildAssertOnSpecificCases() throws Exception {
-        CtClass testClass = Utils.findClass("fr.inria.sample.TestClassWithSpecificCaseToBeAsserted");
-        MethodsAssertGenerator mag = new MethodsAssertGenerator(testClass, Utils.getInputConfiguration(), Utils.getCompiler());
+        CtClass<?> testClass = Utils.findClass("fr.inria.sample.TestClassWithSpecificCaseToBeAsserted");
+        MethodsAssertGenerator mag = new MethodsAssertGenerator(testClass, Utils.getInputConfiguration(), Utils.getCompiler(), testClass.getMethods());
         CtMethod test1 = Utils.findMethod("fr.inria.sample.TestClassWithSpecificCaseToBeAsserted", "test1");
         List<CtMethod<?>> test1_buildNewAssert = mag.generateAsserts(testClass, Collections.singletonList(test1));
 
@@ -83,8 +83,8 @@ public class MethodsAssertGeneratorTest extends AbstractTest {
 				- Collection: with elements (assertTrue(contains())) and empty (assertTrue(isEmpty()))
 				//TODO support generation of assertion on array and on map
 		 */
-        CtClass testClass = Utils.findClass("fr.inria.sample.TestClassWithoutAssert");
-        MethodsAssertGenerator mag = new MethodsAssertGenerator(testClass, Utils.getInputConfiguration(), Utils.getCompiler());
+        CtClass<?> testClass = Utils.findClass("fr.inria.sample.TestClassWithoutAssert");
+        MethodsAssertGenerator mag = new MethodsAssertGenerator(testClass, Utils.getInputConfiguration(), Utils.getCompiler(), testClass.getMethods());
         CtMethod test1 = Utils.findMethod("fr.inria.sample.TestClassWithoutAssert", "test1");
         List<CtMethod<?>> test1_buildNewAssert = mag.generateAsserts(testClass, Collections.singletonList(test1));
         assertEquals(expectedBody, test1_buildNewAssert.get(0).getBody().toString());
@@ -93,7 +93,7 @@ public class MethodsAssertGeneratorTest extends AbstractTest {
 	@Test
 	public void testMakeFailureTest() throws Exception {
 		CtClass<?> testClass = Utils.findClass("fr.inria.filter.failing.FailingTest");
-		MethodsAssertGenerator mag = new MethodsAssertGenerator(testClass, Utils.getInputConfiguration(), Utils.getCompiler());
+		MethodsAssertGenerator mag = new MethodsAssertGenerator(testClass, Utils.getInputConfiguration(), Utils.getCompiler(), testClass.getMethods());
 		final CtMethod testAssertionError = Utils.findMethod("fr.inria.filter.failing.FailingTest", "testAssertionError");
 		final List<CtMethod<?>> generatedAssertion = mag.generateAsserts(testClass, Collections.singletonList(testAssertionError));
 		assertTrue(generatedAssertion.isEmpty());

@@ -72,8 +72,8 @@ public class Amplification {
 		testSelector.reset();
 		List<CtMethod<?>> ampTest = new ArrayList<>();
 
-		updateAmplifiedTestList(ampTest, preAmplification(classTest, tests));
 		resetAmplifiers(classTest);
+		updateAmplifiedTestList(ampTest, preAmplification(classTest, tests));
 
 		for (int i = 0; i < tests.size(); i++) {
 			CtMethod test = tests.get(i);

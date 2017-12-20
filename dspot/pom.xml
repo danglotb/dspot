@@ -58,6 +58,13 @@
     </repositories>
 
     <dependencies>
+
+        <dependency>
+            <groupId>fr.inria.stamp</groupId>
+            <artifactId>test-runner</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <dependency>
             <groupId>fr.inria.gforge.spoon</groupId>
             <artifactId>spoon-core</artifactId>

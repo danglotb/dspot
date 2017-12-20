@@ -207,7 +207,7 @@ public class AmplificationHelper {
         DSpotUtils.addComment(amplifiedTest,
                 "amplification of " +
                         (topParent.getDeclaringType() != null ?
-                        topParent.getDeclaringType().getQualifiedName() + "#" : "") + topParent.getSimpleName(),
+                                topParent.getDeclaringType().getQualifiedName() + "#" : "") + topParent.getSimpleName(),
                 CtComment.CommentType.BLOCK);
         return amplifiedTest;
     }

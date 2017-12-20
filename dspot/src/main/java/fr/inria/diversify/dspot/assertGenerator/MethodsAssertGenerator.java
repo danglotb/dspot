@@ -46,11 +46,17 @@ public class MethodsAssertGenerator {
 
     private DSpotCompiler compiler;
 
-    public MethodsAssertGenerator(CtType originalClass, InputConfiguration configuration, DSpotCompiler compiler) {
+    private Collection<CtMethod<?>> originTestMethods;
+
+    public MethodsAssertGenerator(CtType originalClass,
+                                  InputConfiguration configuration,
+                                  DSpotCompiler compiler,
+                                  Collection<CtMethod<?>> originTestMethods) {
         this.originalClass = originalClass;
         this.configuration = configuration;
         this.compiler = compiler;
         this.factory = configuration.getInputProgram().getFactory();
+        this.originTestMethods = originTestMethods;
     }
 
     public List<CtMethod<?>> generateAsserts(CtType testClass, List<CtMethod<?>> tests) throws IOException, ClassNotFoundException {
@@ -218,7 +224,13 @@ public class MethodsAssertGenerator {
         }
         Counter.updateAssertionOf(testWithAssert, numberOfAddedAssertion);
         if (!testWithAssert.equals(test)) {
-            AmplificationHelper.getAmpTestToParent().put(testWithAssert, test);
+            AmplificationHelper.getAmpTestToParent().put(testWithAssert,
+                    originTestMethods.stream()
+                            .filter(ctMethod ->
+                                    ctMethod.getSimpleName().equals(test.getSimpleName())
+                            ).findFirst()
+                            .get()
+            );
             return testWithAssert;
         } else {
             return null;
@@ -266,7 +278,12 @@ public class MethodsAssertGenerator {
         cloneMethodTest.setSimpleName(cloneMethodTest.getSimpleName() + "_failAssert" + (numberOfFail++));
         Counter.updateAssertionOf(cloneMethodTest, 1);
 
-        AmplificationHelper.getAmpTestToParent().put(cloneMethodTest, test);
+        AmplificationHelper.getAmpTestToParent().put(cloneMethodTest,      originTestMethods.stream()
+                .filter(ctMethod ->
+                        ctMethod.getSimpleName().equals(test.getSimpleName())
+                ).findFirst()
+                .get()
+        );
 
         return cloneMethodTest;
     }

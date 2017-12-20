@@ -48,7 +48,7 @@ public class AssertGenerator {
                 .map(this.assertionRemover::removeAssertion)
                 .collect(Collectors.toList());
         testWithoutAssertions.forEach(cloneClass::addMethod);
-        MethodsAssertGenerator ags = new MethodsAssertGenerator(testClass, this.configuration, compiler);
+        MethodsAssertGenerator ags = new MethodsAssertGenerator(testClass, this.configuration, compiler, tests);
         final List<CtMethod<?>> amplifiedTestWithAssertion =
                 ags.generateAsserts(cloneClass, testWithoutAssertions);
         if (amplifiedTestWithAssertion.isEmpty()) {
