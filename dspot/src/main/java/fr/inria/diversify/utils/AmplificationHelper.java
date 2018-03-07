@@ -21,6 +21,7 @@ import spoon.reflect.visitor.Query;
 import spoon.reflect.visitor.filter.TypeFilter;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -267,29 +268,33 @@ public class AmplificationHelper {
     // we seek diversity in this method
     // to approximate diversity, we use the textual representation of amplified tests
     // since all the amplified tests came from the same original-manuel test case
-    // they have a "lot" of common
-    // we use the sum of the bytes return by the getBytes() method of the string representing amplified test
-    // then compute the standard deviation on this sum
-    // and keep only amplified test that have this value greater or equal of the std deviation
+    // they have a "lot" in common
+    // we use the sum of the bytes return by the getBytes() method of the string representation of amplified test
+    // we sort the list of amplified test to be reduced
+    // using the distance with the average
+    // in this way, we keep amplified test that are "far" from the average, and so maximize the diversity
     public static List<CtMethod<?>> reduce(List<CtMethod<?>> tests) {
-        final List<CtMethod<?>> reducedTests = new ArrayList<>();
+        List<CtMethod<?>> reducedTests;
         if (tests.size() > MAX_NUMBER_OF_TESTS) {
             LOGGER.warn("Too many tests has been generated: {}", tests.size());
-            reducedTests.addAll(_reduce(tests));
-            if (reducedTests.size() > MAX_NUMBER_OF_TESTS) {
-                return reduce(reducedTests);
-            }
-            tests.removeAll(reducedTests);
-            List<CtMethod<?>> tmp = _reduce(tests);
-            while (tmp.size() + reducedTests.size() < MAX_NUMBER_OF_TESTS) { // loop until we have the max number of tests
-                reducedTests.addAll(tmp);
-                tests.removeAll(reducedTests);
-                tmp = _reduce(tests);
-            }
+            final Map<CtMethod<?>, Long> mapMethodToValues = tests.stream()
+                    .collect(Collectors.toMap(
+                            ctMethod -> ctMethod,
+                            ctMethod -> AmplificationHelper.convert(ctMethod.toString().getBytes())
+                    ));
+            final Double average = mapMethodToValues.values()
+                    .stream()
+                    .collect(Collectors.averagingLong(Long::longValue));
+            reducedTests = mapMethodToValues.keySet()
+                    .stream()
+                    .sorted(Comparator.comparingLong(ctMethod ->
+                            (long) Math.abs(mapMethodToValues.get(ctMethod) - average)).reversed()
+                    ).collect(Collectors.toList());
+            reducedTests = reducedTests.subList(0,
+                    reducedTests.size() > MAX_NUMBER_OF_TESTS ? MAX_NUMBER_OF_TESTS : reducedTests.size());
             LOGGER.info("Number of generated test reduced to {}", reducedTests.size());
-        }
-        if (reducedTests.isEmpty()) {
-            reducedTests.addAll(tests);
+        } else {
+            reducedTests = new ArrayList<>();
         }
         ampTestToParent.putAll(reducedTests.stream()
                 .collect(HashMap::new,
@@ -300,23 +305,6 @@ public class AmplificationHelper {
         return reducedTests;
     }
 
-    private static List<CtMethod<?>> _reduce(List<CtMethod<?>> tests) {
-        final List<Long> values = tests.stream()
-                .map(CtMethod::toString)
-                .map(String::getBytes)
-                .map(AmplificationHelper::convert)
-                .collect(Collectors.toList()); // compute the sum of toString().getBytes()
-        final double standardDeviation = standardDeviation(values);
-        final List<CtMethod<?>> reducedTests = values.stream()
-                .filter(integer -> Math.abs(values.get(0) - integer) >= standardDeviation)
-                .map(values::indexOf)
-                .map(tests::get)
-                .collect(Collectors.toList()); // keep tests that have a difference with
-                                               // the first element greater than the std dev
-        reducedTests.add(tests.get(0)); // add the first element, which the "reference"
-        return reducedTests;
-    }
-
     private static long convert(byte[] byteArray) {
         long sum = 0L;
         for (byte aByteArray : byteArray) {
@@ -324,17 +312,4 @@ public class AmplificationHelper {
         }
         return sum;
     }
-
-    private static double standardDeviation(List<Long> hashCodes) {
-        final double mean = hashCodes.stream()
-                .mapToLong(value -> value)
-                .average()
-                .orElse(0.0D);
-        return Math.sqrt(hashCodes.stream()
-                .mapToDouble(value -> value)
-                .map(value -> Math.pow(Math.abs((value - mean)), 2.0D))
-                .sum()
-                / hashCodes.size());
-    }
-
 }

@@ -68,23 +68,16 @@ public class AmplificationHelperTest extends AbstractTest {
 
         List<CtMethod<?>> methods = new ArrayList<>();
         methods.add(methodString);
-        methods.add(methodString);
-        methods.add(methodString);
-        methods.add(methodString);
-        methods.add(methodString);
-        methods.add(methodString);
-        methods.add(methodString);
-        methods.add(methodString);
         final CtMethod clone = methodString.clone();
         final CtLiteral originalLiteral = clone.getElements(new TypeFilter<>(CtLiteral.class)).get(0);
         originalLiteral.replace(Utils.getFactory().createLiteral(originalLiteral.getValue() + "a"));
-        methods.add(clone);
-        methods.add(clone);
         methods.add(clone);
         methods.add(methodInteger);
 
         final List<CtMethod<?>> reduce = AmplificationHelper.reduce(methods);
         assertEquals(2, reduce.size());
+        assertTrue(reduce.contains(clone));
+        assertTrue(reduce.contains(methodInteger));
 
         AmplificationHelper.MAX_NUMBER_OF_TESTS = 200;
     }
