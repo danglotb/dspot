@@ -21,7 +21,7 @@ public class CharacterLiteralAmplifierTest extends AbstractTest {
         Amplifier mutator = new CharLiteralAmplifier();
         mutator.reset(literalMutationClass);
         CtMethod method = literalMutationClass.getMethod(nameMethod);
-        List<CtMethod> mutantMethods = mutator.apply(method);
+        List<CtMethod<?>> mutantMethods = mutator.apply(method);
         assertEquals(6, mutantMethods.size());
     }
 

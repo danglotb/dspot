@@ -16,8 +16,8 @@ import java.util.List;
 
 public class TestMethodCallRemover implements Amplifier {
 
-    public List<CtMethod> apply(CtMethod method) {
-        List<CtMethod> methods = new ArrayList<>();
+    public List<CtMethod<?>> apply(CtMethod<?> method) {
+        List<CtMethod<?>> methods = new ArrayList<>();
 
         if (method.getDeclaringType() != null) {
             //get the list of method calls

@@ -429,7 +429,7 @@ public class AmplificationHelper {
         return c;//discarding " ' and \
     }
 
-    public static CtMethod<?> addOriginInComment(CtMethod<?> amplifiedTest, CtMethod<?> topParent) {
+    public static CtMethod addOriginInComment(CtMethod<?> amplifiedTest, CtMethod<?> topParent) {
         DSpotUtils.addComment(amplifiedTest,
                 "amplification of " +
                         (topParent.getDeclaringType() != null ?

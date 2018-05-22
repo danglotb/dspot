@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class ReplacementAmplifier implements Amplifier {
 
     @Override
-    public List<CtMethod> apply(CtMethod testMethod) {
+    public List<CtMethod<?>> apply(CtMethod<?> testMethod) {
         return testMethod.getElements(new TypeFilter<CtLocalVariable>(CtLocalVariable.class) {
             @Override
             public boolean matches(CtLocalVariable element) {
@@ -26,7 +26,7 @@ public class ReplacementAmplifier implements Amplifier {
             }
         }).stream()
                 .map(ctLocalVariable -> {
-                    final CtMethod clone = AmplificationHelper.cloneTestMethodForAmp(testMethod, "_replacement");
+                    final CtMethod<?> clone = AmplificationHelper.cloneTestMethodForAmp(testMethod, "_replacement");
                     final CtLocalVariable localVariable = clone.getElements(new TypeFilter<>(CtLocalVariable.class))
                             .stream()
                             .filter(ctLocalVariable1 -> ctLocalVariable1.equals(ctLocalVariable))

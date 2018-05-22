@@ -23,7 +23,7 @@ public class ObjectGenerator implements Amplifier {
 	private int counterGenerateNewObject = 0;
 
 	@Override
-	public List<CtMethod> apply(CtMethod method) {
+	public List<CtMethod<?>> apply(CtMethod<?> method) {
 		List<CtLocalVariable<?>> existingObjects = getExistingObjects(method);
 		final Stream<? extends CtMethod<?>> gen_o1 = existingObjects.stream() // must use tmp variable because javac is confused
 				.flatMap(localVariable -> ConstructorCreator.generateAllConstructionOf(localVariable.getType()).stream())

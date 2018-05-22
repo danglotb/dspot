@@ -1,13 +1,13 @@
 package eu.stamp_project.dspot.amplifier;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import eu.stamp_project.utils.DSpotUtils;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtType;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by Benjamin DANGLOT
@@ -15,8 +15,6 @@ import java.util.stream.Collectors;
  * on 07/03/18
  */
 public class AllLiteralAmplifiers implements Amplifier {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AllLiteralAmplifiers.class);
 
     private List<Amplifier> literalAmplifiers;
 
@@ -30,9 +28,16 @@ public class AllLiteralAmplifiers implements Amplifier {
     }
 
     @Override
-    public List<CtMethod> apply(CtMethod testMethod) {
+    public List<CtMethod<?>> apply(CtMethod<?> testMethod) {
         return this.literalAmplifiers.stream()
-                .flatMap(amplifier -> amplifier.apply(testMethod).stream())
+                .flatMap(amplifier -> {
+                    final Stream<CtMethod<?>> stream = amplifier.apply(testMethod).stream();
+                    DSpotUtils.printProgress(
+                            this.literalAmplifiers.indexOf(amplifier),
+                            this.literalAmplifiers.size()
+                    );
+                    return stream;
+                })
                 .collect(Collectors.toList());
     }
 

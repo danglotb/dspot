@@ -218,13 +218,11 @@ public class Amplification {
      * @return New generated tests
      */
     private List<CtMethod<?>> inputAmplifyTests(List<CtMethod<?>> tests) {
-        LOGGER.info("Amplification of inputs...");
         List<CtMethod<?>> amplifiedTests = tests.parallelStream()
                 .flatMap(test -> {
                     DSpotUtils.printProgress(tests.indexOf(test), tests.size());
                     return inputAmplifyTest(test);
                 }).collect(Collectors.toList());
-        LOGGER.info("{} new tests generated", amplifiedTests.size());
         return amplifiedTests;
     }
 
@@ -240,14 +238,18 @@ public class Amplification {
      * @return New generated tests
      */
     private Stream<CtMethod<?>> inputAmplifyTest(CtMethod<?> test) {
-        final CtMethod topParent = AmplificationHelper.getTopParent(test);
-        return amplifiers.parallelStream()
+//        final CtMethod topParent = AmplificationHelper.getTopParent(test);
+        final List<CtMethod<?>> amplifiedTests = amplifiers.parallelStream()
                 .flatMap(amplifier -> amplifier.apply(test).stream())
-                .filter(amplifiedTest -> amplifiedTest != null && !amplifiedTest.getBody().getStatements().isEmpty())
-                .filter(distinctByKey(CtMethod::getBody))
-                .map(amplifiedTest ->
-                        AmplificationHelper.addOriginInComment(amplifiedTest, topParent)
-                );
+                //.filter(amplifiedTest -> amplifiedTest != null && !amplifiedTest.getBody().getStatements().isEmpty())
+                //.filter(distinctByKey(CtMethod::getBody))
+                .collect(Collectors.toList());
+        return amplifiedTests.stream();
+                /*.map(amplifiedTest -> {
+                    DSpotUtils.printProgress(amplifiedTests.indexOf(amplifiedTest), amplifiedTests.size());
+                          return  AmplificationHelper.addOriginInComment(amplifiedTest, topParent);
+                        }
+                );*/
     }
 
     private void resetAmplifiers(CtType parentClass) {

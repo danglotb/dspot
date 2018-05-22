@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface Amplifier {
 
-    List<CtMethod> apply(CtMethod testMethod);
+    List<CtMethod<?>> apply(CtMethod<?> testMethod);
 
     void reset(CtType testClass);
 

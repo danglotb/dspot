@@ -74,20 +74,23 @@ public abstract class AbstractLiteralAmplifier<T> implements Amplifier {
     };
 
     @Override
-    public List<CtMethod> apply(CtMethod testMethod) {
+    public List<CtMethod<?>> apply(CtMethod<?> testMethod) {
         List<CtLiteral<T>> literals = testMethod.getElements(LITERAL_TYPE_FILTER);
         if (literals.isEmpty()) {
             return Collections.emptyList();
         }
         return literals.stream()
-                .flatMap(literal -> this.amplify(literal).stream()
-                        .map(newValue -> {
-                                    final T originalValue = literal.getValue();
-                                    literal.setValue(newValue);
-                                    CtMethod clone = AmplificationHelper.cloneTestMethodForAmp(testMethod, getSuffix());
-                                    literal.setValue(originalValue);
-                                    return clone;
-                                })
+                .flatMap(literal -> {
+                    final Set<T> amplify = this.amplify(literal);
+                            return amplify.stream()
+                                    .map(newValue -> {
+                                        final T originalValue = literal.getValue();
+                                        literal.setValue(newValue);
+                                        CtMethod<?> clone = AmplificationHelper.cloneTestMethodForAmp(testMethod, getSuffix());
+                                        literal.setValue(originalValue);
+                                        return clone;
+                                    });
+                        }
                 ).collect(Collectors.toList());
     }
 
