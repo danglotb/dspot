@@ -3,11 +3,13 @@ package eu.stamp_project.dspot.amplifier;
 import eu.stamp_project.utils.AmplificationChecker;
 import eu.stamp_project.utils.AmplificationHelper;
 import spoon.reflect.code.CtAssignment;
+import spoon.reflect.code.CtBinaryOperator;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.declaration.CtAnnotation;
+import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.visitor.filter.TypeFilter;
@@ -33,6 +35,7 @@ public abstract class AbstractLiteralAmplifier<T> implements Amplifier {
                 Class<?> clazzOfLiteral = null;
                 if ((literal.getParent() instanceof CtInvocation &&
                         AmplificationChecker.isAssert((CtInvocation) literal.getParent()))
+                        || isConcatenationOfLiteral(literal)
                         || literal.getParent(CtAnnotation.class) != null) {
                     return false;
                 } else if (literal.getValue() == null) {
@@ -70,6 +73,15 @@ public abstract class AbstractLiteralAmplifier<T> implements Amplifier {
                 // maybe need a warning ?
                 return false;
             }
+        }
+
+        private boolean isConcatenationOfLiteral(CtLiteral<T> literal) {
+            CtElement currentElement = literal;
+            while (currentElement.getParent() instanceof CtBinaryOperator) {
+                currentElement = currentElement.getParent();
+            }
+            return currentElement.getParent() instanceof CtInvocation &&
+                    AmplificationChecker.isAssert((CtInvocation) currentElement.getParent());
         }
     };
 
