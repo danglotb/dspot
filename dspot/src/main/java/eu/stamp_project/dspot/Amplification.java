@@ -70,6 +70,8 @@ public class Amplification {
         amplification(classTest, AmplificationHelper.getAllTest(classTest), maxIteration);
     }
 
+    public static boolean preAmplify = false;
+
     /**
      * Amplification of multiple methods.
      * <p>
@@ -212,20 +214,24 @@ public class Amplification {
                     });
             return preAmplification(classTest, tests);
         } else {
-            LOGGER.info("Try to add assertions before amplification");
-            final List<CtMethod<?>> amplifiedTestToBeKept = assertGenerator.assertionAmplification(
-                    classTest, testSelector.selectToAmplify(tests));
-            if (!amplifiedTestToBeKept.isEmpty()) {
-                try {
-                    compileAndRunTests(classTest, amplifiedTestToBeKept);
-                } catch (AmplificationException e) {
-                    e.printStackTrace();
-                    return Collections.emptyList();
+            if (preAmplify) {
+                LOGGER.info("Try to add assertions before amplification");
+                final List<CtMethod<?>> amplifiedTestToBeKept = assertGenerator.assertionAmplification(
+                        classTest, testSelector.selectToAmplify(tests));
+                if (!amplifiedTestToBeKept.isEmpty()) {
+                    try {
+                        compileAndRunTests(classTest, amplifiedTestToBeKept);
+                    } catch (AmplificationException e) {
+                        e.printStackTrace();
+                        return Collections.emptyList();
+                    }
+                    testSelector.selectToKeep(amplifiedTestToBeKept);
+                    return testSelector.getAmplifiedTestCases();
+                } else {
+                    return amplifiedTestToBeKept;
                 }
-                testSelector.selectToKeep(amplifiedTestToBeKept);
-                return testSelector.getAmplifiedTestCases();
             } else {
-                return amplifiedTestToBeKept;
+                return tests;
             }
         }
     }
