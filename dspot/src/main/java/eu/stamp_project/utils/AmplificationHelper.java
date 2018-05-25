@@ -401,7 +401,7 @@ public class AmplificationHelper {
 
     public static CtMethod cloneTestMethodForAmp(CtMethod method, String suffix) {
         CtMethod clonedMethod = cloneTestMethod(method, suffix);
-        ampTestToParent.put(clonedMethod, method);
+        //ampTestToParent.put(clonedMethod, method);
         return clonedMethod;
     }
 
@@ -509,9 +509,9 @@ public class AmplificationHelper {
         if (reducedTests.isEmpty()) {
             reducedTests.addAll(tests);
         } else {
-            tests.stream()
-                    .filter(test -> !reducedTests.contains(test))
-                    .forEach(discardedTest -> ampTestToParent.remove(discardedTest));
+//            tests.stream()
+//                    .filter(test -> !reducedTests.contains(test))
+//                    .forEach(discardedTest -> ampTestToParent.remove(discardedTest));
         }
         return reducedTests;
     }
