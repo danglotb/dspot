@@ -99,7 +99,12 @@ public class Amplification {
         for (int i = 0; i < tests.size(); i++) {
             CtMethod test = tests.get(i);
             LOGGER.info("amp {} ({}/{})", test.getSimpleName(), i + 1, tests.size());
-            compileAndRunTests(classTest, Collections.singletonList(tests.get(i)));
+            try {
+                compileAndRunTests(classTest, Collections.singletonList(tests.get(i)));
+            } catch (AmplificationException e) {
+                e.printStackTrace();
+                continue;
+            }
             amplification(classTest, test, maxIteration);
             LOGGER.info("{} amplified test(s) has been selected, global: {}", this.testSelector.getAmplifiedTestCases().size() - ampTestCount, this.testSelector.getAmplifiedTestCases().size());
             ampTestCount = this.testSelector.getAmplifiedTestCases().size();
@@ -143,10 +148,13 @@ public class Amplification {
             } else {
                 currentTestList = testsWithAssertions;
             }
-            final TestListener result = compileAndRunTests(classTest, currentTestList);
-            if (result == null) {
+            final TestListener result;
+            try {
+                result = compileAndRunTests(classTest, currentTestList);
+            } catch (AmplificationException e) {
                 continue;
-            } else if (!result.getFailingTests().isEmpty()) {
+            }
+            if (!result.getFailingTests().isEmpty()) {
                 LOGGER.warn("Discarding failing test cases");
                 final Set<String> failingTestCase =
                         result.getFailingTests()
@@ -174,7 +182,13 @@ public class Amplification {
      * @return Valid amplified tests
      */
     private List<CtMethod<?>> preAmplification(CtType classTest, List<CtMethod<?>> tests) {
-        TestListener result = compileAndRunTests(classTest, tests);
+        TestListener result = null;
+        try {
+            result = compileAndRunTests(classTest, tests);
+        } catch (AmplificationException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
         if (!result.getFailingTests().isEmpty()) {
             LOGGER.warn("{} tests failed before the amplifications", result.getFailingTests().size());
             LOGGER.warn("{}", result.getFailingTests().stream()
@@ -202,7 +216,12 @@ public class Amplification {
             final List<CtMethod<?>> amplifiedTestToBeKept = assertGenerator.assertionAmplification(
                     classTest, testSelector.selectToAmplify(tests));
             if (!amplifiedTestToBeKept.isEmpty()) {
-                compileAndRunTests(classTest, amplifiedTestToBeKept);
+                try {
+                    compileAndRunTests(classTest, amplifiedTestToBeKept);
+                } catch (AmplificationException e) {
+                    e.printStackTrace();
+                    return Collections.emptyList();
+                }
                 testSelector.selectToKeep(amplifiedTestToBeKept);
                 return testSelector.getAmplifiedTestCases();
             } else {
@@ -264,18 +283,14 @@ public class Amplification {
      * @return Results of tests' run
      * @throws AmplificationException
      */
-    private TestListener compileAndRunTests(CtType classTest, List<CtMethod<?>> currentTestList) {
+    private TestListener compileAndRunTests(CtType classTest, List<CtMethod<?>> currentTestList) throws AmplificationException {
         CtType amplifiedTestClass = AmplificationHelper.cloneTestClassAndAddGivenTest(classTest, currentTestList);
-        try {
-            return TestCompiler.compileAndRun(
-                    amplifiedTestClass,
-                    this.compiler,
-                    currentTestList,
-                    this.configuration
-            );
-        } catch (AmplificationException e) {
-            throw new RuntimeException(e);
-        }
+        return TestCompiler.compileAndRun(
+                amplifiedTestClass,
+                this.compiler,
+                currentTestList,
+                this.configuration
+        );
     }
 
     /**

@@ -52,7 +52,7 @@ public class TestCompiler {
      * @param compiler      the compiler
      * @param testsToRun    the test methods to be run, should be in testClass
      * @param configuration
-     * @return an instance of {@link eu.stamp.project.testrunner.runner.test.TestListener}
+     * @return an instance of {@link eu.stamp_project.testrunner.runner.test.TestListener}
      * that contains the result of the execution of test methods if everything went fine, null otherwise.
      * @throws AmplificationException in case the compilation failed or a timeout has been thrown.
      */
