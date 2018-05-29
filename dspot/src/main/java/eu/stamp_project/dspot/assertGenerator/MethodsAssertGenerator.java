@@ -4,7 +4,6 @@ import eu.stamp_project.compare.ObjectLog;
 import eu.stamp_project.compare.Observation;
 import eu.stamp_project.dspot.AmplificationException;
 import eu.stamp_project.utils.AmplificationHelper;
-import eu.stamp_project.utils.Counter;
 import eu.stamp_project.utils.DSpotUtils;
 import eu.stamp_project.utils.compilation.DSpotCompiler;
 import eu.stamp_project.utils.compilation.TestCompiler;
@@ -176,7 +175,7 @@ public class MethodsAssertGenerator {
                 }
             }
         }
-        Counter.updateAssertionOf(testWithAssert, numberOfAddedAssertion);
+        //Counter.updateAssertionOf(testWithAssert, numberOfAddedAssertion);
         if (!testWithAssert.equals(test)) {
             return testWithAssert;
         } else {

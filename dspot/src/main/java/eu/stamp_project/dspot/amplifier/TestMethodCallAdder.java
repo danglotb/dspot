@@ -2,7 +2,6 @@ package eu.stamp_project.dspot.amplifier;
 
 import eu.stamp_project.utils.AmplificationChecker;
 import eu.stamp_project.utils.AmplificationHelper;
-import eu.stamp_project.utils.Counter;
 import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtStatement;
@@ -55,7 +54,7 @@ public class TestMethodCallAdder implements Amplifier {
         final CtStatement parent = getParent(stmt);
         parent.insertBefore(cloneStmt);
         cloneStmt.setParent(parent.getParent(CtBlock.class));
-        Counter.updateInputOf(cloned_method, 1);
+        //Counter.updateInputOf(cloned_method, 1);
 //        DSpotUtils.addComment(cloneStmt, "MethodCallAdder", CtComment.CommentType.INLINE);
         return cloned_method;
     }

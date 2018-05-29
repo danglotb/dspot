@@ -4,14 +4,25 @@ package eu.stamp_project.dspot.amplifier;
 
 import eu.stamp_project.utils.AmplificationChecker;
 import eu.stamp_project.utils.AmplificationHelper;
-import eu.stamp_project.utils.Counter;
 import eu.stamp_project.utils.DSpotUtils;
-import spoon.reflect.code.*;
-import spoon.reflect.declaration.*;
+import spoon.reflect.code.CtComment;
+import spoon.reflect.code.CtLiteral;
+import spoon.reflect.code.CtUnaryOperator;
+import spoon.reflect.code.UnaryOperatorKind;
+import spoon.reflect.declaration.CtAnnotation;
+import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.CtType;
 import spoon.reflect.visitor.Query;
 import spoon.reflect.visitor.filter.TypeFilter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /* This processor is meant to replace all literal values in test cases by other literal values
@@ -106,7 +117,7 @@ public class TestDataMutator implements Amplifier {
 			}
 		}
 		toReplace.replace(newLiteral);
-		Counter.updateInputOf(cloned_method, 1);
+		//Counter.updateInputOf(cloned_method, 1);
 		DSpotUtils.addComment(toReplace, "TestDataMutator on numbers", CtComment.CommentType.INLINE);
 		return cloned_method;
 	}
@@ -126,7 +137,7 @@ public class TestDataMutator implements Amplifier {
 
 	private CtMethod<?> createStringMutant(CtMethod<?> method, int original_lit_index, String newValue) {
 		CtMethod<?> cloned_method = AmplificationHelper.cloneTestMethodForAmp(method, "_literalMutationString");
-		Counter.updateInputOf(cloned_method, 1);
+		//Counter.updateInputOf(cloned_method, 1);
 		CtLiteral toReplace = Query.getElements(cloned_method.getBody(), new LiteralToBeMutedFilter())
 				.get(original_lit_index);
 		toReplace.replace(cloned_method.getFactory().Code().createLiteral(newValue));
@@ -142,7 +153,7 @@ public class TestDataMutator implements Amplifier {
 
 	private CtMethod<?> createCharacterMutant(CtMethod<?> method, int original_lit_index, Character newValue) {
 		CtMethod<?> cloned_method = AmplificationHelper.cloneTestMethodForAmp(method, "_literalMutationChar");
-		Counter.updateInputOf(cloned_method, 1);
+		//Counter.updateInputOf(cloned_method, 1);
 		CtLiteral toReplace = Query.getElements(cloned_method.getBody(), new LiteralToBeMutedFilter())
 				.get(original_lit_index);
 		toReplace.replace(cloned_method.getFactory().Code().createLiteral(newValue));
@@ -219,7 +230,7 @@ public class TestDataMutator implements Amplifier {
 		}).get(0);
 		newValue.setValue(!value);
 		newValue.setTypeCasts(booleanLiteral.getTypeCasts());
-		Counter.updateInputOf(cloned_method, 1);
+		//Counter.updateInputOf(cloned_method, 1);
 		DSpotUtils.addComment(newValue, "TestDataMutator on boolean", CtComment.CommentType.INLINE);
 		return cloned_method;
 	}

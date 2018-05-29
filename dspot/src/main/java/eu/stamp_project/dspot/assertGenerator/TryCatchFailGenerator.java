@@ -2,7 +2,6 @@ package eu.stamp_project.dspot.assertGenerator;
 
 import eu.stamp_project.testrunner.runner.test.Failure;
 import eu.stamp_project.utils.AmplificationHelper;
-import eu.stamp_project.utils.Counter;
 import eu.stamp_project.utils.DSpotUtils;
 import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtCatch;
@@ -77,7 +76,7 @@ public class TryCatchFailGenerator {
 
         cloneMethodTest.setBody(body);
         cloneMethodTest.setSimpleName(cloneMethodTest.getSimpleName() + "_failAssert" + (numberOfFail++));
-        Counter.updateAssertionOf(cloneMethodTest, 1);
+        //Counter.updateAssertionOf(cloneMethodTest, 1);
 
         return cloneMethodTest;
     }
