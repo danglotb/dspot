@@ -1,7 +1,8 @@
 package eu.stamp_project.dspot.assertGenerator;
 
-import eu.stamp_project.testrunner.runner.test.TestListener;
 import eu.stamp_project.dspot.AmplificationException;
+import eu.stamp_project.testrunner.runner.test.Failure;
+import eu.stamp_project.testrunner.runner.test.TestListener;
 import eu.stamp_project.utils.compilation.DSpotCompiler;
 import eu.stamp_project.utils.compilation.TestCompiler;
 import eu.stamp_project.utils.sosiefier.InputConfiguration;
@@ -12,8 +13,10 @@ import spoon.reflect.declaration.CtType;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -103,11 +106,6 @@ public class AssertGenerator {
             return Collections.emptyList();
         }
 
-        final List<String> failuresMethodName = testResult.getFailingTests()
-                .stream()
-                .map(failure -> failure.testCaseName)
-                .collect(Collectors.toList());
-
         final List<String> passingTestsName = testResult.getPassingTests();
 
         final List<CtMethod<?>> generatedTestWithAssertion = new ArrayList<>();
@@ -126,6 +124,9 @@ public class AssertGenerator {
             }
         }
 
+        final List<String> failuresMethodName =
+                getFailureTestMethodsNameDistinctByQualifiedNameOfException(testResult.getFailingTests());
+
         // add try/catch/fail on failing/error tests
         if (!failuresMethodName.isEmpty()) {
             LOGGER.info("{} test fail, generating try/catch/fail blocks...", failuresMethodName.size());
@@ -143,5 +144,13 @@ public class AssertGenerator {
             }
         }
         return generatedTestWithAssertion;
+    }
+
+    private List<String> getFailureTestMethodsNameDistinctByQualifiedNameOfException(List<Failure> failures) {
+        final Set<String> qualifiedNameOfException = new HashSet<>();
+        return failures.stream()
+                .filter(failure -> qualifiedNameOfException.add(failure.fullQualifiedNameOfException))
+                .map(failure -> failure.testCaseName)
+                .collect(Collectors.toList());
     }
 }
