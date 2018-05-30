@@ -4,7 +4,6 @@ import eu.stamp_project.utils.AmplificationChecker;
 import eu.stamp_project.utils.AmplificationHelper;
 import spoon.reflect.code.CtAssignment;
 import spoon.reflect.code.CtBinaryOperator;
-import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtLocalVariable;
@@ -41,19 +40,11 @@ public abstract class AbstractLiteralAmplifier<T> implements Amplifier {
                 } else if (literal.getValue() == null) {
                     if (literal.getParent() instanceof CtInvocation<?>) {
                         final CtInvocation<?> parent = (CtInvocation<?>) literal.getParent();
-                        final CtExpression<?> ctExpression = parent
-                                .getArguments()
-                                .stream()
-                                .filter(parameter -> parameter.equals(literal))
-                                .findFirst()
-                                .get();
                         clazzOfLiteral = parent.getExecutable()
                                 .getDeclaration()
                                 .getParameters()
-                                .get(parent
-                                        .getArguments()
-                                        .indexOf(ctExpression)
-                                ).getType()
+                                .get(parent.getArguments().indexOf(literal))
+                                .getType()
                                 .getActualClass(); // getting the class of the expected parameter
                     } else if (literal.getParent() instanceof CtAssignment) {
                         clazzOfLiteral = ((CtAssignment) literal.getParent())
