@@ -60,7 +60,6 @@ public class StringLiteralAmplifier extends AbstractLiteralAmplifier<String> {
             values.add("");
             values.add(System.getProperty("line.separator"));
             values.add(System.getProperty("path.separator"));
-            values.add("\0");
         }
 
         return values;

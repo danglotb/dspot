@@ -31,6 +31,9 @@ public abstract class AbstractLiteralAmplifier<T> implements Amplifier {
         @Override
         public boolean matches(CtLiteral<T> literal) {
             try {
+                if ("Amplified".equals(literal.getDocComment())) {
+                    return false;
+                }
                 Class<?> clazzOfLiteral = null;
                 if ((literal.getParent() instanceof CtInvocation &&
                         AmplificationChecker.isAssert((CtInvocation) literal.getParent()))
@@ -89,7 +92,9 @@ public abstract class AbstractLiteralAmplifier<T> implements Amplifier {
                                     .map(newValue -> {
                                         final T originalValue = literal.getValue();
                                         literal.setValue(newValue);
+                                        literal.setDocComment("Amplified");
                                         CtMethod<?> clone = AmplificationHelper.cloneTestMethodForAmp(testMethod, getSuffix());
+                                        literal.setDocComment("");
                                         literal.setValue(originalValue);
                                         return clone;
                                     });

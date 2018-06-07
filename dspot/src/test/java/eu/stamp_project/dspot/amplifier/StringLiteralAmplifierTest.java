@@ -16,6 +16,14 @@ public class StringLiteralAmplifierTest extends AbstractTest {
 
     @Test
     public void testAmplify() throws Exception {
+
+        /*
+            test the StringLiteral
+            The first iteration is complete, i.e. apply random operations plus the specific strings
+            the second iteration does not apply the specific strings, we already did
+            After the reset, the amplifier should obtain the same number than a the first iteration.
+         */
+
         final String nameMethod = "methodString";
         CtClass<Object> literalMutationClass = Utils.getFactory().Class().get("fr.inria.amp.LiteralMutation");
         AmplificationHelper.setSeedRandom(42L);
@@ -23,9 +31,17 @@ public class StringLiteralAmplifierTest extends AbstractTest {
         amplificator.reset(literalMutationClass);
         CtMethod method = literalMutationClass.getMethod(nameMethod);
         List<CtMethod<?>> mutantMethods = amplificator.apply(method);
-        assertEquals(46, mutantMethods.size());
+        assertEquals(38, mutantMethods.size());
+        mutantMethods = amplificator.apply(method);
+        assertEquals(23, mutantMethods.size());
+        amplificator.reset(literalMutationClass);
+        mutantMethods = amplificator.apply(method);
+        assertEquals(38, mutantMethods.size());
+        List<CtMethod<?>> apply = amplificator.apply(mutantMethods.get(0));
+        assertEquals(16, apply.size());
+        apply = amplificator.apply(apply.get(0));
+        assertEquals(13, apply.size());
     }
-
     @Test
     public void testDoesNotAmplifyChar() throws Exception {
         final String nameMethod = "methodCharacter";
