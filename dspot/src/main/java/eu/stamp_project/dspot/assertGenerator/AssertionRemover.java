@@ -15,7 +15,6 @@ import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.reference.CtTypeReference;
-import spoon.reflect.reference.CtVariableReference;
 import spoon.reflect.visitor.Filter;
 import spoon.reflect.visitor.filter.TypeFilter;
 
@@ -92,14 +91,25 @@ public class AssertionRemover {
                         clone
                 );
                 invocation.getParent(CtStatementList.class).insertBefore(statementTypeFilter, localVariable);
-            } else if (clone instanceof CtVariableRead && !(clone instanceof CtFieldRead)) {
-                final CtVariableReference variable = ((CtVariableRead) clone).getVariable();
-                variableReadsAsserted.add(invocation.getParent(CtBlock.class).getElements(
-                        (Filter<CtLocalVariable>) localVariable ->
-                                localVariable.getReference().equals(variable)
-                ).get(0));
             }
         }
+
+        final CtBlock block = invocation.getParent(CtBlock.class);
+        variableReadsAsserted.addAll(
+                invocation.getElements(new TypeFilter<CtVariableRead<?>>(CtVariableRead.class) {
+                    @Override
+                    public boolean matches(CtVariableRead<?> element) {
+                        return !(element instanceof CtFieldRead);
+                    }
+                }).stream()
+                        .flatMap(variable ->
+                                block.getElements(
+                                        (Filter<CtLocalVariable<?>>) localVariable ->
+                                                localVariable.getReference().equals(variable.getVariable())
+                                ).stream()
+                        ).distinct().collect(Collectors.toList())
+        );
+
         // must find the first statement list to remove the invocation from it, e.g. the block that contains the assertions
         // the assertion can be inside other stuff, than directly in the block
         CtElement topStatement = invocation;

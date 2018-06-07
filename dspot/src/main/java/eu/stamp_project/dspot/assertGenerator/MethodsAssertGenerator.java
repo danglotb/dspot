@@ -73,6 +73,7 @@ public class MethodsAssertGenerator {
     public List<CtMethod<?>> addAssertions(CtType<?> testClass, List<CtMethod<?>> testCases) {
         CtType clone = testClass.clone();
         testClass.getPackage().addType(clone);
+
         LOGGER.info("Add observations points in passing tests.");
         LOGGER.info("Instrumentation...");
         final List<CtMethod<?>> testCasesWithLogs = testCases.stream()

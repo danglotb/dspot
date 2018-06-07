@@ -2,7 +2,11 @@ package eu.stamp_project.compare;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.BaseStream;
 
 
 public class MethodsHandler {
@@ -30,6 +34,7 @@ public class MethodsHandler {
         forbiddenMethods.add("listIterator");
         forbiddenMethods.add("stream");
         forbiddenMethods.add("parallelStream");
+        forbiddenMethods.add("reverse");
     }
 
     public MethodsHandler() {
@@ -54,17 +59,29 @@ public class MethodsHandler {
     }
 
     private boolean isValidMethod(Method m) {
-        if (!Modifier.isPublic(m.getModifiers())
-                || Modifier.isStatic(m.getModifiers())
-                || isVoid(m.getReturnType())
-                || m.getReturnType() == Class.class) {
+        if (!Modifier.isPublic(m.getModifiers()) // the method is not public
+                || Modifier.isStatic(m.getModifiers()) // the method is static
+                || isVoid(m.getReturnType()) // the method is return void type, i.e. it returns nothing
+                || m.getReturnType() == Class.class // the method returns Class<?>
+                || !Modifier.isPublic(m.getReturnType().getModifiers())  // the method return a type that is not visible, i.e. is not public.
+                || returnStream(m) // the method return a stream
+        ) {
             return false;
         }
+
         // we only consider methods that take no parameter
         return (!forbiddenMethods.contains(m.getName()) ||
-                ( (!m.getDeclaringClass().equals(Object.class) && !m.getDeclaringClass().equals(Enum.class))
+                ((!m.getDeclaringClass().equals(Object.class) && !m.getDeclaringClass().equals(Enum.class))
                         && (m.getName().equals("hashCode") || m.getName().equals("toString"))))
-                        && m.getParameterTypes().length == 0;
+                && m.getParameterTypes().length == 0;
+    }
+
+    private boolean returnStream(Method method) {
+        try {
+            return BaseStream.class.isAssignableFrom(method.getReturnType());
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private static boolean isVoid(Class<?> type) {
