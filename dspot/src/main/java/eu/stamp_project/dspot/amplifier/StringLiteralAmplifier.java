@@ -62,7 +62,7 @@ public class StringLiteralAmplifier extends AbstractLiteralAmplifier<String> {
 
     @Override
     protected Set<String> amplify(CtLiteral<String> existingLiteral) {
-        Set<String> values = new HashSet<>(this.existingStrings);
+        Set<String> values = new HashSet<>();
         values.add(this.existingStrings.get(AmplificationHelper.getRandom().nextInt(this.existingStrings.size() - 1)));
         String value = (String) existingLiteral.getValue();
         if (value != null) {

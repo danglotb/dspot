@@ -98,6 +98,10 @@ public abstract class AbstractLiteralAmplifier<T> implements Amplifier {
             literals = literals.subList(literals.indexOf(literal) + 1, literals.size());
         }
 
+        if (literals.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         return literals.stream()
                 .filter(stringCtLiteral -> !"Amplified".equals(stringCtLiteral.getDocComment()))
                 .flatMap(literal -> {

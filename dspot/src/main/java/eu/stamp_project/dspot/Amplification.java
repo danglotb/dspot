@@ -1,13 +1,12 @@
 package eu.stamp_project.dspot;
 
-import eu.stamp_project.testrunner.runner.test.Failure;
-import eu.stamp_project.testrunner.runner.test.TestListener;
 import eu.stamp_project.dspot.amplifier.Amplifier;
 import eu.stamp_project.dspot.assertGenerator.AssertGenerator;
 import eu.stamp_project.dspot.selector.TestSelector;
+import eu.stamp_project.testrunner.runner.test.Failure;
+import eu.stamp_project.testrunner.runner.test.TestListener;
 import eu.stamp_project.utils.AmplificationChecker;
 import eu.stamp_project.utils.AmplificationHelper;
-import eu.stamp_project.utils.DSpotUtils;
 import eu.stamp_project.utils.compilation.DSpotCompiler;
 import eu.stamp_project.utils.compilation.TestCompiler;
 import eu.stamp_project.utils.sosiefier.InputConfiguration;
@@ -245,7 +244,7 @@ public class Amplification {
     private List<CtMethod<?>> inputAmplifyTests(List<CtMethod<?>> tests) {
         List<CtMethod<?>> amplifiedTests = tests.parallelStream()
                 .flatMap(test -> {
-                    DSpotUtils.printProgress(tests.indexOf(test), tests.size());
+//                    DSpotUtils.printProgress(tests.indexOf(test), tests.size());
                     return inputAmplifyTest(test);
                 }).collect(Collectors.toList());
         return amplifiedTests;
