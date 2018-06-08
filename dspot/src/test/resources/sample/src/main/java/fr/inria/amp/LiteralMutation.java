@@ -7,11 +7,11 @@ public class LiteralMutation {
     String presentLitString = "MySecondStringLiteral";
 
     public void methodByte() {
-        byte literalByte = (byte)23;
+        byte literalByte = (byte) 23;
     }
 
     public void methodShort() {
-        short literalShort = (short)23;
+        short literalShort = (short) 23;
     }
 
     public void methodInteger() {

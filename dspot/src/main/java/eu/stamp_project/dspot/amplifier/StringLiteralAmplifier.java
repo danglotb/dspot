@@ -1,6 +1,7 @@
 package eu.stamp_project.dspot.amplifier;
 
 import eu.stamp_project.utils.AmplificationHelper;
+import spoon.reflect.code.CtBinaryOperator;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtType;
@@ -25,9 +26,38 @@ public class StringLiteralAmplifier extends AbstractLiteralAmplifier<String> {
 
     @Override
     public List<CtMethod<?>> apply(CtMethod testMethod) {
-        final List<CtMethod<?>> amplifiedTests = super.apply(testMethod);
+        flatStringLiterals(testMethod);
+        final List<CtMethod<?>> amplified = super.apply(testMethod);
         this.hasBeenApplied = true;
-        return amplifiedTests;
+        return amplified;
+    }
+
+    public static void flatStringLiterals(CtMethod<?> testMethod) {
+        final List<CtBinaryOperator> deepestBinOp = testMethod.getElements(
+                op -> (op.getLeftHandOperand() instanceof CtLiteral &&
+                        ((CtLiteral) op.getLeftHandOperand()).getValue() instanceof String) &&
+                        op.getRightHandOperand() instanceof CtLiteral &&
+                        ((CtLiteral) op.getRightHandOperand()).getValue() instanceof String
+        );
+        deepestBinOp.forEach(StringLiteralAmplifier::concatAndReplace);
+        if (deepestBinOp.stream()
+                .allMatch(ctBinaryOperator -> ctBinaryOperator.getParent(CtBinaryOperator.class) == null)) {
+            return;
+        } else {
+            flatStringLiterals(testMethod);
+        }
+    }
+
+    public static void concatAndReplace(CtBinaryOperator<?> binaryOperator) {
+        final CtLiteral<?> ctElement = concatString(binaryOperator);
+        binaryOperator.replace(ctElement);
+    }
+
+    public static CtLiteral<?> concatString(CtBinaryOperator<?> binaryOperator) {
+        return binaryOperator.getFactory().createLiteral(
+                ((String)((CtLiteral)binaryOperator.getLeftHandOperand()).getValue())
+                + ((String)((CtLiteral)binaryOperator.getRightHandOperand()).getValue())
+        );
     }
 
     @Override
@@ -64,7 +94,6 @@ public class StringLiteralAmplifier extends AbstractLiteralAmplifier<String> {
 
         return values;
     }
-
 
 
     @Override

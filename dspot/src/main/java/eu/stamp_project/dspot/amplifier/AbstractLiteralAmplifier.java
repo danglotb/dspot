@@ -15,6 +15,7 @@ import spoon.reflect.visitor.filter.TypeFilter;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,13 +28,13 @@ public abstract class AbstractLiteralAmplifier<T> implements Amplifier {
 
     protected CtType<?> testClassToBeAmplified;
 
-    private final TypeFilter<CtLiteral<T>> LITERAL_TYPE_FILTER = new TypeFilter<CtLiteral<T>>(CtLiteral.class) {
+    protected final TypeFilter<CtLiteral<T>> LITERAL_TYPE_FILTER = new TypeFilter<CtLiteral<T>>(CtLiteral.class) {
         @Override
         public boolean matches(CtLiteral<T> literal) {
             try {
-                if ("Amplified".equals(literal.getDocComment())) {
+                /*if ("Amplified".equals(literal.getDocComment())) {
                     return false;
-                }
+                }*/
                 Class<?> clazzOfLiteral = null;
                 if ((literal.getParent() instanceof CtInvocation &&
                         AmplificationChecker.isAssert((CtInvocation) literal.getParent()))
@@ -85,7 +86,20 @@ public abstract class AbstractLiteralAmplifier<T> implements Amplifier {
         if (literals.isEmpty()) {
             return Collections.emptyList();
         }
+
+        final Optional<CtLiteral<String>> first = testMethod.getElements(
+                new TypeFilter<CtLiteral<String>>(CtLiteral.class))
+                .stream()
+                .filter(stringCtLiteral -> "Amplified".equals(stringCtLiteral.getDocComment()))
+                .findFirst();
+
+        if (first.isPresent()) {
+            final CtLiteral<String> literal = first.get();
+            literals = literals.subList(literals.indexOf(literal) + 1, literals.size());
+        }
+
         return literals.stream()
+                .filter(stringCtLiteral -> !"Amplified".equals(stringCtLiteral.getDocComment()))
                 .flatMap(literal -> {
                     final Set<T> amplify = this.amplify(literal);
                             return amplify.stream()
