@@ -215,11 +215,22 @@ public class Amplification {
         } else {
             if (preAmplify) {
                 LOGGER.info("Try to add assertions before amplification");
-                final List<CtMethod<?>> amplifiedTestToBeKept = assertGenerator.assertionAmplification(
+                List<CtMethod<?>> amplifiedTestToBeKept = assertGenerator.assertionAmplification(
                         classTest, testSelector.selectToAmplify(tests));
                 if (!amplifiedTestToBeKept.isEmpty()) {
                     try {
-                        compileAndRunTests(classTest, amplifiedTestToBeKept);
+                        final TestListener testListener = compileAndRunTests(classTest, amplifiedTestToBeKept);
+                        if (!testListener.getFailingTests().isEmpty()) {
+                            LOGGER.warn("Error during execution of amplified tests.");
+                            final List<String> failingTestMethods =
+                                    testListener.getFailingTests()
+                                            .stream()
+                                            .map(failure -> failure.testCaseName)
+                                            .collect(Collectors.toList());
+                            amplifiedTestToBeKept = amplifiedTestToBeKept.stream()
+                                    .filter(ctMethod -> !failingTestMethods.contains(ctMethod.getSimpleName()))
+                                    .collect(Collectors.toList());
+                        }
                     } catch (AmplificationException e) {
                         e.printStackTrace();
                         return Collections.emptyList();

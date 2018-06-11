@@ -1,9 +1,11 @@
 package eu.stamp_project.dspot.selector;
 
+import eu.stamp_project.automaticbuilder.AutomaticBuilderFactory;
+import eu.stamp_project.minimization.ChangeMinimizer;
+import eu.stamp_project.minimization.Minimizer;
 import eu.stamp_project.testrunner.EntryPoint;
 import eu.stamp_project.testrunner.runner.test.Failure;
 import eu.stamp_project.testrunner.runner.test.TestListener;
-import eu.stamp_project.automaticbuilder.AutomaticBuilderFactory;
 import eu.stamp_project.utils.AmplificationChecker;
 import eu.stamp_project.utils.AmplificationHelper;
 import eu.stamp_project.utils.DSpotUtils;
@@ -11,8 +13,6 @@ import eu.stamp_project.utils.Initializer;
 import eu.stamp_project.utils.compilation.DSpotCompiler;
 import eu.stamp_project.utils.sosiefier.InputConfiguration;
 import eu.stamp_project.utils.sosiefier.InputProgram;
-import eu.stamp_project.minimization.ChangeMinimizer;
-import eu.stamp_project.minimization.Minimizer;
 import org.codehaus.plexus.util.FileUtils;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtType;
@@ -125,14 +125,13 @@ public class ChangeDetectorSelector implements TestSelector {
         }
         if (!results.getFailingTests().isEmpty()) {
             results.getFailingTests()
-                    .forEach(failure ->
-                            this.failurePerAmplifiedTest.put(
-                                    amplifiedTestToBeKept.stream()
-                                            .filter(ctMethod ->
-                                                    ctMethod.getSimpleName().equals(failure.testCaseName)
-                                            ).findFirst()
-                                            .get(), failure)
-                    );
+                    .forEach(failure -> amplifiedTestToBeKept.stream()
+                            .filter(ctMethod ->
+                                    ctMethod.getSimpleName().equals(failure.testCaseName)
+                            ).findFirst().ifPresent(first ->
+                                    this.failurePerAmplifiedTest.put(
+                                            first, failure)
+                            ));
         }
         return amplifiedTestToBeKept;
     }

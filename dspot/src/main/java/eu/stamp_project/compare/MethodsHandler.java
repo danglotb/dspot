@@ -35,6 +35,7 @@ public class MethodsHandler {
         forbiddenMethods.add("stream");
         forbiddenMethods.add("parallelStream");
         forbiddenMethods.add("reverse");
+        forbiddenMethods.add("clear");
     }
 
     public MethodsHandler() {

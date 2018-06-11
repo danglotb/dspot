@@ -79,7 +79,7 @@ public class AssertionRemover {
             }
             if (clone instanceof CtStatement) {
                 clone.getTypeCasts().clear();
-                invocation.getParent(CtStatementList.class).insertBefore(statementTypeFilter, (CtStatement) clone);
+                //invocation.getParent(CtStatementList.class).insertBefore(statementTypeFilter, (CtStatement) clone);
             } else if (!(clone instanceof CtLiteral || clone instanceof CtVariableRead)) {
                 CtTypeReference<?> typeOfParameter = clone.getType();
                 if (clone.getType().equals(factory.Type().NULL_TYPE)) {
@@ -90,7 +90,7 @@ public class AssertionRemover {
                         typeOfParameter.getSimpleName() + "_" + counter[0]++,
                         clone
                 );
-                invocation.getParent(CtStatementList.class).insertBefore(statementTypeFilter, localVariable);
+                //invocation.getParent(CtStatementList.class).insertBefore(statementTypeFilter, localVariable);
             }
         }
 
