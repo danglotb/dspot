@@ -56,13 +56,14 @@ public class TypeUtils {
     }
 
     public static boolean isPrimitive(Object object) {
-        return isPrimitive(object.getClass());
+        return object != null && isPrimitive(object.getClass());
     }
 
     public static boolean isPrimitive(Class cl) {
-        return cl.isPrimitive()
+        return cl != null &&
+                (cl.isPrimitive()
                 || isWrapperType(cl)
-                || String.class.equals(cl);
+                || String.class.equals(cl));
     }
 
     private static boolean isWrapperType(Class cl) {
