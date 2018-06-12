@@ -88,8 +88,9 @@ public class StringLiteralAmplifier extends AbstractLiteralAmplifier<String> {
         if (!this.hasBeenApplied) {
             // add special strings
             values.add("");
-            values.add(System.getProperty("line.separator"));
+//            values.add("\\" + System.getProperty("line.separator")); TODO find a way to protect it correctly
             values.add(System.getProperty("path.separator"));
+            values.add(null);
         }
 
         return values;

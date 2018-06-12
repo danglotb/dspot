@@ -59,22 +59,32 @@ public class MethodsHandler {
         cache.put(clazz, methodsList);
     }
 
-    private boolean isValidMethod(Method m) {
-        if (!Modifier.isPublic(m.getModifiers()) // the method is not public
-                || Modifier.isStatic(m.getModifiers()) // the method is static
-                || isVoid(m.getReturnType()) // the method is return void type, i.e. it returns nothing
-                || m.getReturnType() == Class.class // the method returns Class<?>
-                || !Modifier.isPublic(m.getReturnType().getModifiers())  // the method return a type that is not visible, i.e. is not public.
-                || returnStream(m) // the method return a stream
-        ) {
+    private boolean isDefaulttoStringOrHashCode(Method method) {
+        return (method.getDeclaringClass().equals(Object.class) || method.getDeclaringClass().equals(Enum.class))
+                && (method.getName().equals("hashCode") || method.getName().equals("toString"));
+    }
+
+    private boolean isValidMethod(Method method) {
+        if (!Modifier.isPublic(method.getModifiers()) // the method is not public
+                || Modifier.isStatic(method.getModifiers()) // the method is static
+                || isVoid(method.getReturnType()) // the method is return void type, i.e. it returns nothing
+                || method.getReturnType() == Class.class // the method returns Class<?>
+                || !Modifier.isPublic(method.getReturnType().getModifiers())  // the method return a type that is not visible, i.e. is not public.
+                || returnStream(method) // the method return a stream
+                || method.getParameterTypes().length > 0 // the method hasParameter
+                || isDefaulttoStringOrHashCode(method) // we don't use default implementation of toString() and hashCode, i.e. implementation of Object and Enum
+                ) {
             return false;
         }
 
-        // we only consider methods that take no parameter
-        return (!forbiddenMethods.contains(m.getName()) ||
-                ((!m.getDeclaringClass().equals(Object.class) && !m.getDeclaringClass().equals(Enum.class))
-                        && (m.getName().equals("hashCode") || m.getName().equals("toString"))))
-                && m.getParameterTypes().length == 0;
+        // we rely on convention name: get, is, should
+        // TODO expand the scope of assertion to other pure method, with return type etc...
+
+        return method.getName().startsWith("get") ||
+                method.getName().startsWith("is") ||
+                method.getName().startsWith("should") ||
+                method.getName().equals("toString") ||
+                method.getName().startsWith("hashCode");
     }
 
     private boolean returnStream(Method method) {
