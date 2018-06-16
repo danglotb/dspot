@@ -218,6 +218,17 @@ public class AmplificationHelper {
         // remove "extends TestCases"
         if (AmplificationChecker.inheritFromTestCase(testClassJUnit3)) {
             ((CtClassImpl) testClassJUnit3).setSuperclass(null);
+            if (!((CtClassImpl) testClassJUnit3).getConstructors().isEmpty()) {
+                ((CtClassImpl<?>) testClassJUnit3).getConstructors().forEach(ctConstructor ->
+                        ctConstructor.getBody().getElements(new TypeFilter<>(CtInvocation.class))
+                                .stream()
+                                .filter(invocation -> invocation.toString().startsWith("super"))
+                                .forEach(ctConstructor.getBody()::removeStatement));
+                ((CtClassImpl<?>) testClassJUnit3).getConstructors()
+                        .stream()
+                        .filter(ctConstructor -> ctConstructor.getBody().getStatements().isEmpty())
+                        .forEach(((CtClassImpl) testClassJUnit3)::removeConstructor);
+            }
         } else {
             if (testClassJUnit3.getSuperclass() != null) {
                 CtType<?> superclass = testClassJUnit3.getSuperclass().getDeclaration();
@@ -246,6 +257,10 @@ public class AmplificationHelper {
                 }
             }
         }
+
+        // remove suite() method
+        testClassJUnit3.getMethodsByName("suite").stream().filter(ctMethod -> ctMethod.getParameters().isEmpty())
+                .forEach(testClassJUnit3::removeMethod);
 
         // convertToJUnit4 JUnit3 into JUnit4 test methods
         testClassJUnit3
@@ -355,7 +370,7 @@ public class AmplificationHelper {
      * Prepares the test annotation of a method
      *
      * @param cloned_method The test method to modify
-     * @param factory The factory to create a new test annotation if needed
+     * @param factory       The factory to create a new test annotation if needed
      */
     public static void prepareTestMethod(CtMethod cloned_method, Factory factory) {
         CtAnnotation testAnnotation = cloned_method.getAnnotations().stream()

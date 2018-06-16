@@ -7,6 +7,7 @@ import spoon.reflect.code.CtFieldRead;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtLocalVariable;
+import spoon.reflect.code.CtNewArray;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.code.CtStatementList;
 import spoon.reflect.code.CtUnaryOperator;
@@ -79,8 +80,8 @@ public class AssertionRemover {
             }
             if (clone instanceof CtStatement) {
                 clone.getTypeCasts().clear();
-                //invocation.getParent(CtStatementList.class).insertBefore(statementTypeFilter, (CtStatement) clone);
-            } else if (!(clone instanceof CtLiteral || clone instanceof CtVariableRead)) {
+                invocation.getParent(CtStatementList.class).insertBefore(statementTypeFilter, (CtStatement) clone);
+            } else if (!(clone instanceof CtNewArray || clone instanceof CtLiteral || clone instanceof CtVariableRead)) {
                 CtTypeReference<?> typeOfParameter = clone.getType();
                 if (clone.getType().equals(factory.Type().NULL_TYPE)) {
                     typeOfParameter = factory.Type().createReference(Object.class);
@@ -90,7 +91,7 @@ public class AssertionRemover {
                         typeOfParameter.getSimpleName() + "_" + counter[0]++,
                         clone
                 );
-                //invocation.getParent(CtStatementList.class).insertBefore(statementTypeFilter, localVariable);
+                invocation.getParent(CtStatementList.class).insertBefore(statementTypeFilter, localVariable);
             }
         }
 

@@ -193,7 +193,7 @@ public class SelectorOnDiff {
 
     private Predicate<String> presentInBothVersion = pathToClass ->
             new File(configuration.getProperties().getProperty("project") + pathToClass.substring(1)).exists() &&
-            new File(configuration.getProperties().getProperty("folderPath") + pathToClass.substring(1)).exists();
+                    new File(configuration.getProperties().getProperty("folderPath") + pathToClass.substring(1)).exists();
 
     private Set<CtMethod<?>> getMethodsOfTestClassesAccordingToModifiedJavaFiles(Set<String> modifiedJavaFiles) {
         final List<String> candidateTestClassName = modifiedJavaFiles.stream()
@@ -220,11 +220,13 @@ public class SelectorOnDiff {
                 .filter(testClass ->
                         testClass != null &&
                                 (testClass.getMethods().stream().anyMatch(AmplificationChecker::isTest) ||
-                                        testClass.getSuperclass()
-                                                .getTypeDeclaration()
-                                                .getMethods()
-                                                .stream()
-                                                .anyMatch(AmplificationChecker::isTest)
+                                        (testClass.getSuperclass() != null &&
+                                                testClass.getSuperclass()
+                                                        .getTypeDeclaration()
+                                                        .getMethods()
+                                                        .stream()
+                                                        .anyMatch(AmplificationChecker::isTest)
+                                        )
                                 )
                 ).flatMap(testClass -> {
                     if (testClass.getMethods().stream().noneMatch(AmplificationChecker::isTest)) {
@@ -271,8 +273,18 @@ public class SelectorOnDiff {
     public Set<CtMethod> getModifiedMethods(Set<String> modifiedJavaFiles) {
         return modifiedJavaFiles.stream()
                 .flatMap(s ->
-                        getModifiedMethods(pathToFirstVersion + s.substring(1),
-                                pathToSecondVersion + s.substring(1)
+                        getModifiedMethods(
+                                pathToFirstVersion +
+                                        s.substring(
+                                                (s.startsWith("a/src/") ? 6 : 1) +
+                                                        (this.configuration.getProperties().getProperty("targetModule") != null ?
+                                                                this.configuration.getProperties().getProperty("targetModule").length() : 0)
+                                        ),
+                                pathToSecondVersion + s.substring(
+                                        (s.startsWith("a/src/") ? 6 : 1) +
+                                                (this.configuration.getProperties().getProperty("targetModule") != null ?
+                                                        this.configuration.getProperties().getProperty("targetModule").length() : 0)
+                                )
                         )
                 ).collect(Collectors.toSet());
     }
@@ -302,14 +314,18 @@ public class SelectorOnDiff {
         while (!declaringType.isTopLevel()) {
             declaringType = declaringType.getParent(CtType.class);
         }
-        return factory.Class().get(declaringType.getQualifiedName()).getMethod(
-                methodToFoundInAnotherFactory.getType(),
-                methodToFoundInAnotherFactory.getSimpleName(),
-                (CtTypeReference<?>[]) methodToFoundInAnotherFactory.getParameters()
-                        .stream()
-                        .map(parameter -> ((CtParameter) parameter).getType())
-                        .toArray((IntFunction<CtTypeReference<?>[]>) CtTypeReference[]::new)
-        );
+        try {
+            return factory.Class().get(declaringType.getQualifiedName()).getMethod(
+                    methodToFoundInAnotherFactory.getType(),
+                    methodToFoundInAnotherFactory.getSimpleName(),
+                    (CtTypeReference<?>[]) methodToFoundInAnotherFactory.getParameters()
+                            .stream()
+                            .map(parameter -> ((CtParameter) parameter).getType())
+                            .toArray((IntFunction<CtTypeReference<?>[]>) CtTypeReference[]::new)
+            );
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private Set<String> getModifiedJavaFiles() {

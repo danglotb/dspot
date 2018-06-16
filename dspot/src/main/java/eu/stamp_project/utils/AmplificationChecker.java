@@ -170,12 +170,17 @@ public class AmplificationChecker {
     }
 
     private static boolean containsMethodCallToAssertion(CtInvocation<?> invocation, int deep) {
-        final CtMethod<?> method = invocation.getExecutable().getDeclaringType().getTypeDeclaration().getMethod(
-                invocation.getExecutable().getType(),
-                invocation.getExecutable().getSimpleName(),
-                invocation.getExecutable().getParameters().toArray(new CtTypeReference[0])
-        );
-        return method != null && !method.getElements(new HasAssertInvocationFilter(deep - 1)).isEmpty();
+        try {
+            final CtMethod<?> method = invocation.getExecutable().getDeclaringType().getTypeDeclaration().getMethod(
+                    invocation.getExecutable().getType(),
+                    invocation.getExecutable().getSimpleName(),
+                    invocation.getExecutable().getParameters().toArray(new CtTypeReference[0])
+            );
+            return method != null && !method.getElements(new HasAssertInvocationFilter(deep - 1)).isEmpty();
+        } catch (Exception e) {
+//            e.printStackTrace();
+            return false;
+        }
     }
 
     public static boolean isTestJUnit4(CtType<?> classTest) {
