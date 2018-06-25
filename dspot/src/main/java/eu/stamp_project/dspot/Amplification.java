@@ -88,6 +88,7 @@ public class Amplification {
             return;
         }
         LOGGER.info("amplification of {} ({} test(s))", classTest.getQualifiedName(), tests.size());
+        Amplification.nbTry = 0;
         preAmplification(classTest, tests);
         LOGGER.info("{} amplified test(s) has been selected, global: {}", this.testSelector.getAmplifiedTestCases().size() - ampTestCount, this.testSelector.getAmplifiedTestCases().size());
         ampTestCount = this.testSelector.getAmplifiedTestCases().size();
@@ -164,6 +165,8 @@ public class Amplification {
         return amplifiedTests;
     }
 
+    private static int nbTry = 0;
+
     /**
      * Adds new assertions in multiple tests.
      * <p>
@@ -174,8 +177,16 @@ public class Amplification {
      * @return Valid amplified tests
      */
     private List<CtMethod<?>> preAmplification(CtType classTest, List<CtMethod<?>> tests) {
-        TestListener result = compileAndRunTests(classTest, tests);
+        TestListener result = null;
+        try {
+            result = compileAndRunTests(classTest, tests);
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
         if (!result.getFailingTests().isEmpty()) {
+            if (nbTry > 3) {
+                return Collections.emptyList();
+            }
             LOGGER.warn("{} tests failed before the amplifications", result.getFailingTests().size());
             LOGGER.warn("{}", result.getFailingTests().stream()
                     .map(Object::toString)
@@ -196,11 +207,35 @@ public class Amplification {
                             //ignored
                         }
                     });
+            Amplification.nbTry++;
             return preAmplification(classTest, tests);
         } else {
             LOGGER.info("Try to add assertions before amplification");
             final List<CtMethod<?>> amplifiedTestToBeKept = assertGenerator.assertionAmplification(
                     classTest, testSelector.selectToAmplify(tests));
+            result = compileAndRunTests(classTest, amplifiedTestToBeKept);
+            if (!result.getFailingTests().isEmpty()) {
+                LOGGER.warn("{} tests failed before the amplifications", result.getFailingTests().size());
+                LOGGER.warn("{}", result.getFailingTests().stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(System.getProperty("line.separator")))
+                );
+                LOGGER.warn("Discarding following test cases for the amplification");
+                result.getFailingTests()
+                        .stream()
+                        .map(failure -> failure.testCaseName)
+                        .forEach(failure -> {
+                            try {
+                                CtMethod testToRemove = amplifiedTestToBeKept.stream()
+                                        .filter(m -> failure.equals(m.getSimpleName()))
+                                        .findFirst().get();
+                                amplifiedTestToBeKept.remove(amplifiedTestToBeKept.indexOf(testToRemove));
+                                LOGGER.warn("{}", testToRemove.getSimpleName());
+                            } catch (Exception ignored) {
+                                //ignored
+                            }
+                        });
+            }
             if (!amplifiedTestToBeKept.isEmpty()) {
                 compileAndRunTests(classTest, amplifiedTestToBeKept);
                 testSelector.selectToKeep(amplifiedTestToBeKept);
