@@ -101,8 +101,7 @@ public class MethodsHandler {
                 name.startsWith("get") ||
                 name.startsWith("is") ||
                 name.startsWith("should") ||
-                name.equals("toString") ||
-                name.startsWith("hashCode");
+                name.equals("toString");
     }
 
     private boolean returnStream(Method method) {
