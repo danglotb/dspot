@@ -16,7 +16,6 @@ import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.filter.TypeFilter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -91,7 +90,9 @@ public class TryCatchFailGenerator {
                 factory.createVariableRead(parameter.getReference(), false),
                 factory.Class().get(java.lang.Throwable.class).getMethodsByName("getMessage").get(0).getReference()
         );
+        /*
         if (!AssertGeneratorHelper.containsObjectReferences(failure.messageOfFailure)) {
+
             ctCatch.getBody().addStatement(
                     AssertGeneratorHelper.buildInvocation(factory,
                             "assertEquals",
@@ -99,6 +100,7 @@ public class TryCatchFailGenerator {
                     )
             );
         }
+         */
     }
 
     // here, we get the correct name of the expected Exception.
