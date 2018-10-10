@@ -13,6 +13,7 @@ import eu.stamp_project.utils.compilation.TestCompiler;
 import eu.stamp_project.program.InputConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spoon.SpoonException;
 import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtComment;
 import spoon.reflect.code.CtInvocation;
@@ -147,11 +148,14 @@ public class MethodsAssertGenerator {
                     observations.get(id).getObservationValues(),
                     Double.parseDouble(configuration.getDelta())
             );
-
-            if (assertStatements.stream()
-                    .map(Object::toString)
-                    .map("// AssertGenerator add assertion\n"::concat)
-                    .anyMatch(testWithAssert.getBody().getLastStatement().toString()::equals)) {
+            try {
+                if (assertStatements.stream()
+                        .map(Object::toString)
+                        .map("// AssertGenerator add assertion\n"::concat)
+                        .anyMatch(testWithAssert.getBody().getLastStatement().toString()::equals)) {
+                    continue;
+                }
+            } catch (SpoonException ignored) {
                 continue;
             }
             int line = Integer.parseInt(id.split("__")[1]);
