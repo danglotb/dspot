@@ -5,6 +5,7 @@ import eu.stamp_project.utils.AmplificationHelper;
 import eu.stamp_project.utils.DSpotUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spoon.SpoonException;
 import spoon.reflect.declaration.CtMethod;
 
 import java.util.ArrayList;
@@ -75,7 +76,13 @@ public class NoBudgetizer implements Budgetizer {
             LOGGER.warn("Too many tests have been generated: {}", tests.size());
             final Map<Long, List<CtMethod<?>>> valuesToMethod = new HashMap<>();
             for (CtMethod<?> test : tests) {
-                final long value = sumByteArrayToLong(test.toString().getBytes());
+                final String toString;
+                try {
+                    toString = test.toString();
+                } catch (SpoonException e) {
+                    continue;
+                }
+                final long value = sumByteArrayToLong(toString.getBytes());
                 if (!valuesToMethod.containsKey(value)) {
                     valuesToMethod.put(value, new ArrayList<>());
                 }
