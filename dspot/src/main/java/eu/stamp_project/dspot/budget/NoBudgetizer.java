@@ -88,6 +88,9 @@ public class NoBudgetizer implements Budgetizer {
                 }
                 valuesToMethod.get(value).add(test);
             }
+            if (valuesToMethod.isEmpty()) {
+                return reducedTests;
+            }
             final Long average = average(valuesToMethod.keySet());
             while (reducedTests.size() < InputConfiguration.get().getMaxTestAmplified()) {
                 final Long furthest = furthest(valuesToMethod.keySet(), average);
