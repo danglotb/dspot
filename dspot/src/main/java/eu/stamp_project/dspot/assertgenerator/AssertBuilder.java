@@ -102,16 +102,18 @@ public class AssertBuilder {
                                                 )));
                                     } else {
                                         if (value instanceof String) {
-                                            if (!((String) value).startsWith("/") && !((String) value).startsWith("file:/") ) {
+                                            if (!((String) value).startsWith("/") && !((String) value).startsWith("file:/")) {
                                                 if (!AssertGeneratorHelper.containsObjectReferences((String) value)) {
+                                                    expressions.add(AssertGeneratorHelper.buildInvocation(factory, "assertEquals",
+                                                            Arrays.asList(printPrimitiveString(factory, value),
+                                                                    variableRead)));
+                                                } else {
                                                     expressions.add(AssertGeneratorHelper.buildInvocation(factory, "assertEquals",
                                                             Arrays.asList(printPrimitiveString(factory, value),
                                                                     variableRead)));
                                                 }
                                             } else {
-                                                expressions.add(AssertGeneratorHelper.buildInvocation(factory, "assertEquals",
-                                                        Arrays.asList(printPrimitiveString(factory, value),
-                                                                variableRead)));
+                                                System.out.println(String.format("Skipping %s", value));
                                             }
                                         }
                                     }
