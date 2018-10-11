@@ -71,7 +71,7 @@ public class TryCatchFailGenerator {
 
         List<CtCatch> catchers = new ArrayList<>(1);
         catchers.add(ctCatch);
-        addAssertionOnException(ctCatch, failure);
+        //addAssertionOnException(ctCatch, failure);
         tryBlock.setCatchers(catchers);
 
         CtBlock body = factory.Core().createBlock();
