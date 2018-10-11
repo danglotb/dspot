@@ -108,12 +108,12 @@ public class DSpotUtils {
     	return InputConfiguration.get().getAbsolutePathToProjectRoot() + PATH_TO_DSPOT_DEPENDENCIES;
     }
     public static void copyPackageFromResources() {
-
       final String pathToTestClassesDirectory =  DSpotUtils.getAbsolutePathToDSpotDependencies() + PACKAGE_PATH;
         try {
             FileUtils.forceMkdir(new File(pathToTestClassesDirectory));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            // ignored
+            return;
         }
         Arrays.stream(DSPOT_CLASSES).forEach(file -> {
             try {
