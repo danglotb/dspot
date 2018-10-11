@@ -102,15 +102,17 @@ public class AssertBuilder {
                                                 )));
                                     } else {
                                         if (value instanceof String) {
-                                            if (!AssertGeneratorHelper.containsObjectReferences((String) value)) {
+                                            if (!((String) value).startsWith("/")) {
+                                                if (!AssertGeneratorHelper.containsObjectReferences((String) value)) {
+                                                    expressions.add(AssertGeneratorHelper.buildInvocation(factory, "assertEquals",
+                                                            Arrays.asList(printPrimitiveString(factory, value),
+                                                                    variableRead)));
+                                                }
+                                            } else {
                                                 expressions.add(AssertGeneratorHelper.buildInvocation(factory, "assertEquals",
                                                         Arrays.asList(printPrimitiveString(factory, value),
                                                                 variableRead)));
                                             }
-                                        } else {
-                                            expressions.add(AssertGeneratorHelper.buildInvocation(factory, "assertEquals",
-                                                    Arrays.asList(printPrimitiveString(factory, value),
-                                                            variableRead)));
                                         }
                                     }
                                 }
