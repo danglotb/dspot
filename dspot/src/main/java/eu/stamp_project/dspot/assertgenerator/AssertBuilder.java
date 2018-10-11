@@ -102,7 +102,7 @@ public class AssertBuilder {
                                                 )));
                                     } else {
                                         if (value instanceof String) {
-                                            if (!((String) value).startsWith("/")) {
+                                            if (!((String) value).startsWith("/") && !((String) value).startsWith("file:/") ) {
                                                 if (!AssertGeneratorHelper.containsObjectReferences((String) value)) {
                                                     expressions.add(AssertGeneratorHelper.buildInvocation(factory, "assertEquals",
                                                             Arrays.asList(printPrimitiveString(factory, value),
