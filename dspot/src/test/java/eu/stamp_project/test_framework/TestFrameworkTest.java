@@ -41,6 +41,8 @@ public class TestFrameworkTest extends AbstractTest {
             Test the generation of code that make a test expecting a given Exception
          */
         final CtMethod testJUnit3 = Utils.findMethod("fr.inria.helper.SecondClassJUnit3", "testExpectingAnException");
+        AmplificationHelper.addTestBindingToOriginal(testJUnit3, testJUnit3);
+
         final CtMethod<?> actualJUnit3 = TestFramework.get().generateExpectedExceptionsBlock(
                 testJUnit3,
                 new Failure("", "", new RuntimeException()),
@@ -49,6 +51,8 @@ public class TestFrameworkTest extends AbstractTest {
         assertEquals(actualJUnit3.toString(), JUnit3WithExceptionThrown, actualJUnit3.toString());
 
         final CtMethod testJUnit4 = Utils.findMethod("fr.inria.helper.TestWithMultipleAsserts", "testThrownException");
+        AmplificationHelper.addTestBindingToOriginal(testJUnit4, testJUnit4);
+
         final CtMethod<?> actualJUnit4 = TestFramework.get().generateExpectedExceptionsBlock(
                 testJUnit4,
                 new Failure("", "", new RuntimeException()),
@@ -57,6 +61,7 @@ public class TestFrameworkTest extends AbstractTest {
         assertEquals(actualJUnit4.toString(), JUnit4WithExceptionThrown, actualJUnit4.toString());
 
         final CtMethod testJUnit5 = Utils.findMethod("fr.inria.testframework.TestSupportJUnit5", "testExpectAnException");
+        AmplificationHelper.addTestBindingToOriginal(testJUnit5, testJUnit5);
         final CtMethod<?> actualJUnit5 = TestFramework.get().generateExpectedExceptionsBlock(
                 testJUnit5,
                 new Failure("", "", new RuntimeException()),
@@ -106,20 +111,26 @@ public class TestFrameworkTest extends AbstractTest {
 
         //JUnit3
         final CtMethod testJUnit3 = Utils.findMethod("fr.inria.helper.SecondClassJUnit3", "test");
+        AmplificationHelper.addTestBindingToOriginal(testJUnit3, testJUnit3);
         assertTrue(TestFramework.get().isTest(testJUnit3));
         //JUnit4
         final CtMethod testJUnit4 = Utils.findMethod("fr.inria.helper.TestWithMultipleAsserts", "test");
+        AmplificationHelper.addTestBindingToOriginal(testJUnit4, testJUnit4);
         assertTrue(TestFramework.get().isTest(testJUnit4));
         //JUnit5
         final CtMethod testJUnit5 = Utils.findMethod("fr.inria.helper.ClassWithInnerClass", "Junit5Test");
+        AmplificationHelper.addTestBindingToOriginal(testJUnit5, testJUnit4);
         assertTrue(TestFramework.get().isTest(testJUnit5));
 
         // NOT A TEST
         CtMethod currentNotATest = Utils.findMethod("fr.inria.helper.ClassWithInnerClass", "notATestBecauseEmpty");
+        AmplificationHelper.addTestBindingToOriginal(currentNotATest, currentNotATest);
         assertFalse(TestFramework.get().isTest(currentNotATest));
         currentNotATest = Utils.findMethod("fr.inria.helper.ClassWithInnerClass", "notATestBecauseParameters");
+        AmplificationHelper.addTestBindingToOriginal(currentNotATest, currentNotATest);
         assertFalse(TestFramework.get().isTest(currentNotATest));
         currentNotATest = Utils.findMethod("fr.inria.helper.ClassWithInnerClass", "methodIntermediate1");
+        AmplificationHelper.addTestBindingToOriginal(currentNotATest, currentNotATest);
         assertFalse(TestFramework.get().isTest(currentNotATest));
     }
 
