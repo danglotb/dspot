@@ -116,15 +116,19 @@ public class InputConfiguration {
      */
     public static InputConfiguration initialize(Properties properties) {
         if (InputConfiguration.instance != null) {
-            LOGGER.warn("Erasing old instance of InputConfiguration");
-            DSpotCache.reset();
-            Main.GLOBAL_REPORT.reset();
+            reset();
         }
         InputConfiguration.instance = new InputConfiguration(properties);
         InputConfiguration.instance.configPath = "";
         InputConfiguration.instance.setBuilderName(ConstantsProperties.AUTOMATIC_BUILDER_NAME.get(properties));
         InputConfiguration.instance.initializeBuilder(properties);
         return InputConfiguration.instance;
+    }
+
+    private static void reset() {
+        LOGGER.warn("Erasing old instance of InputConfiguration");
+        DSpotCache.reset();
+        Main.GLOBAL_REPORT.reset();
     }
 
     /**
@@ -149,7 +153,7 @@ public class InputConfiguration {
      */
     public static InputConfiguration initialize(Properties properties, String builderName) {
         if (InputConfiguration.instance != null) {
-            LOGGER.warn("Erasing old instance of InputConfiguration");
+            reset();
         }
         InputConfiguration.instance = new InputConfiguration(properties);
         InputConfiguration.instance.configPath = "";
