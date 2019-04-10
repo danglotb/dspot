@@ -155,6 +155,9 @@ public class TestFrameworkTest extends AbstractTest {
     private void checksBuildInvocationForGivenJUnitVersion(String fullQualifiedName, String test, String nameOfExpectedAssertClass) {
         final CtClass<?> testClass = Utils.findClass(fullQualifiedName);
         final CtMethod testMethod = Utils.findMethod(fullQualifiedName, test);
+        if (testMethod == null) {
+            throw new RuntimeException("The computed test method is null " + fullQualifiedName + "#" + test);
+        }
         CtInvocation<?> ctInvocation = TestFramework.get().buildInvocationToAssertion(
                 testMethod,
                 AssertEnum.ASSERT_TRUE,

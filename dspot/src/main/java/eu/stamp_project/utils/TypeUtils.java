@@ -46,7 +46,7 @@ public class TypeUtils {
     }
 
     public static boolean isPrimitiveMap(Object object) {
-        if(Map.class.isInstance(object)) {
+        if (Map.class.isInstance(object)) {
             Map map = (Map) object;
             return map.isEmpty() ||
                     map.keySet()
@@ -78,42 +78,43 @@ public class TypeUtils {
         return o != null && o.getClass().isArray();
     }
 
-	public static boolean isPrimitive(CtTypeReference type) {
-		try {
-			return type.isPrimitive() || type.unbox().isPrimitive();
-		} catch (Exception e) {
-			return false;
-		}
-	}
+    public static boolean isPrimitive(CtTypeReference type) {
+        try {
+            return type.isPrimitive() || type.unbox().isPrimitive();
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
-	public static boolean isString(CtTypeReference type) {
-		try {
+    public static boolean isString(CtTypeReference type) {
+        try {
             return String.class.isAssignableFrom(type.getActualClass());
         } catch (spoon.support.SpoonClassNotFoundException ignored) {
 
-		} catch (Exception e) {
-		    e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.warn("Error during checkEnum isString on {}", type.toString());
-		}
-		return false;
-	}
+        }
+        return false;
+    }
 
-	/**
-	 * Returns the full Java qualified name of a method
-	 * @param method
-	 * @return qualified name
-	 */
-	public static String getQualifiedName (CtMethod method) {
-		StringBuilder qualifiedName = new StringBuilder();
-		if (method!=null) {
-			if (method.getParent(CtClass.class)!=null)  {
-				if (method.getParent(CtPackage.class) != null) {
-					qualifiedName.append(method.getParent(CtPackage.class)).append(".");
-				}
-				qualifiedName.append(method.getParent(CtClass.class).getSimpleName()).append(".");
-			}
-			qualifiedName.append(method.getSimpleName());
-		}
-		return qualifiedName.toString();
-	}
+    /**
+     * Returns the full Java qualified name of a method
+     *
+     * @param method
+     * @return qualified name
+     */
+    public static String getQualifiedName(CtMethod method) {
+        StringBuilder qualifiedName = new StringBuilder();
+        if (method != null) {
+            if (method.getParent(CtClass.class) != null) {
+                if (method.getParent(CtPackage.class) != null) {
+                    qualifiedName.append(method.getParent(CtPackage.class)).append(".");
+                }
+                qualifiedName.append(method.getParent(CtClass.class).getSimpleName()).append(".");
+            }
+            qualifiedName.append(method.getSimpleName());
+        }
+        return qualifiedName.toString();
+    }
 }
