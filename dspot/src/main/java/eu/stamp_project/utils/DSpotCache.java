@@ -15,7 +15,7 @@ public class DSpotCache {
 	private static Cache<String, TestFrameworkSupport> frameworkCache;
 	private static CacheManager cacheManager;
 
-	static {
+	private static void init() {
 		cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
 				.withCache("frameworkCache", CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class,
 						TestFrameworkSupport.class, ResourcePoolsBuilder.heap(
@@ -26,13 +26,13 @@ public class DSpotCache {
 	}
 
 	public static Cache<String, TestFrameworkSupport> getTestFrameworkCache() {
+		if (frameworkCache == null) {
+			init();
+		}
 		return frameworkCache;
 	}
 
 	public static void reset() {
-		System.out.println("RESETING CACHE");
-		System.out.println(frameworkCache.toString());
-		frameworkCache.clear();
-		System.out.println(frameworkCache.toString());
+		init();
 	}
 }
