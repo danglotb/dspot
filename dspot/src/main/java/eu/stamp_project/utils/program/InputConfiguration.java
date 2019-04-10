@@ -128,6 +128,7 @@ public class InputConfiguration {
     private static void reset() {
         LOGGER.warn("Erasing old instance of InputConfiguration");
         DSpotCache.reset();
+        AmplificationHelper.resetTestBindingToOriginal();
         Main.GLOBAL_REPORT.reset();
     }
 
