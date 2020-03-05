@@ -80,13 +80,13 @@ public class Context2NameTest {
             "    String mess = \"mess-print\";" + AmplificationHelper.LINE_SEPARATOR +
             "    System.out.print(mess);" + AmplificationHelper.LINE_SEPARATOR +
             "    String local = \"local\" + id;" + AmplificationHelper.LINE_SEPARATOR +
-            "    System.out.print(((this.global) + local));" + AmplificationHelper.LINE_SEPARATOR +
+            "    System.out.print(global + local);" + AmplificationHelper.LINE_SEPARATOR +
             "}", methodListBeforeC2N.get(0).toString());
         assertEquals("private void mess(int name) {" + AmplificationHelper.LINE_SEPARATOR +
             "    String mess = \"mess-print\";" + AmplificationHelper.LINE_SEPARATOR +
             "    System.out.print(mess);" + AmplificationHelper.LINE_SEPARATOR +
             "    String ex = \"local\" + name;" + AmplificationHelper.LINE_SEPARATOR +
-            "    System.out.print(((this.global) + ex));" + AmplificationHelper.LINE_SEPARATOR +
+            "    System.out.print(global + ex);" + AmplificationHelper.LINE_SEPARATOR +
             "}", methodListAfterC2N.get(0).toString());
 
         // the second method AKA "test"
