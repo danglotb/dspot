@@ -34,6 +34,7 @@ public class CloverExecutor {
         setMavenHome();
         runGoals(
                 pathToRootOfProject,
+                "-Djava.locale.providers=COMPAT,CLDR,SPI",
                 "clean",
                 "org.openclover:clover-maven-plugin:4.4.1:setup",
                 "test"
@@ -50,6 +51,7 @@ public class CloverExecutor {
         setMavenHome();
         runGoals(
                 pathToRootOfProject,
+                "-Djava.locale.providers=COMPAT,CLDR,SPI",
                 "clean",
                 "org.openclover:clover-maven-plugin:4.4.1:setup",
                 "test",
